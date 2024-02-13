@@ -10,10 +10,10 @@ app.get('/', (re, res) => {
     return res.json("From Backend Server");
 })
 
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
+const connection = mysql.createConnection({
+    host: "example.com",
+    user: "user1",
+    password: "password1",
     database: "paista_database" // Selecting the database
 })
 
