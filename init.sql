@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS posts (
 );
 
 -- Insert Initial Data
+INSERT INTO users (username, email, password) VALUES ('root', 'root@localhost', '');
 INSERT INTO users (username, email, password) VALUES ('user1', 'user1@example.com', 'password1');
 INSERT INTO users (username, email, password) VALUES ('user2', 'user2@example.com', 'password2');
 
