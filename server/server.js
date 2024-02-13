@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const cors = require('cors');
 
 const app = express()
@@ -20,12 +20,15 @@ const db = mysql.createConnection({
 
 // Attempting to get user information from the SQL database however it is not working
 app.get('/users', (req, res) => {
-    const sql = "SELECT * FROM users";
-    db.query(sql, (err, data) => {
-        if (err) return res.json(err);
-        return res.json(data);
-    })
-})
+    connection.query('SELECT * FROM users', (error, results) => {
+        if (error) {
+            console.error('Error fetching users:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+        res.json(results);
+    });
+});
 
 app.listen(8081, () => {
     console.log("listening");
