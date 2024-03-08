@@ -1,19 +1,29 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react';
 
 function App() {
-  useEffect(() =>{
-    // When going to the users page it does not work
-    fetch('http://localhost:8081/')
-    .then(res => res.json())
-    .then(data => console.log(data))
-    .catch(err => console.log(err))
-  }, [])
-  
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    console.log('This is not working');
+    fetch('/api/data')
+      .then((response) => response.json())
+      .then((jsonData) => {
+        console.log('Received data:', jsonData); // Log the received data
+        setData(jsonData);
+      })
+      .catch((error) => console.error('Error fetching data:', error));
+  }, []);
+
   return (
     <div>
-
+      <h1>Your React App</h1>
+      <ul>
+        {data.map((item) => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

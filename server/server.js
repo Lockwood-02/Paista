@@ -1,35 +1,39 @@
 const express = require('express');
-const mysql = require('mysql2');
-const cors = require('cors');
+const sqlite3 = require('sqlite3');
+const path = require('path');
 
-const app = express()
-app.use(cors())
+const app = express();
+const port = process.env.PORT || 5000;
 
-// On the default homepage this is stored in the console
-app.get('/', (re, res) => {
-    return res.json("From Backend Server");
-})
+const dbPath = path.resolve(__dirname, '../data/database.db');
+const db = new sqlite3.Database(dbPath);
 
-const connection = mysql.createConnection({
-    host: "example.com",
-    user: "user1",
-    password: "password1",
-    database: "paista_database" // Selecting the database
-})
-
-
-// Attempting to get user information from the SQL database however it is not working
-app.get('/users', (req, res) => {
-    connection.query('SELECT * FROM users', (error, results) => {
-        if (error) {
-            console.error('Error fetching users:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
+app.get('/api/data', (req, res) => {
+    db.all('SELECT * FROM your_table_name', (err, rows) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Internal Server Error');
             return;
         }
-        res.json(results);
+        res.json(rows);
     });
 });
 
-app.listen(8081, () => {
-    console.log("listening");
-})
+app.get('/api/data', (req, res) => {
+    db.all('SELECT * FROM your_table_name', (err, rows) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+
+        console.log('Data from the database:', rows); // Log the data
+
+        res.json(rows);
+    });
+});
+
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
