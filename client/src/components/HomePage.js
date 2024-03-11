@@ -1,5 +1,7 @@
 // src/components/HomePage.js
 import React from 'react';
+import Post from './Post';
+import postData from './postData';
 import logo from '../PiastaFigma.png';
 import avatar from '../blankPFPRound.png';
 
@@ -28,9 +30,11 @@ const HomePage = () => {
                 <div className="mb-4">
                     <h1 className="text-4xl font-medium font-header">Home</h1>
                 </div>
-                <div className="bg-white p-4 mb-4 rounded shadow">
-                    <h2 className="text-xl font-bold mb-2">Post Title</h2>
-                    <p className="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                <div >
+                    {/* Render posts using the Post component */}
+                    {postData.map((post, index) => (
+                        <Post key={index} course={post.course} title={post.title} description={post.description} />
+                    ))}
                 </div>
             </div>
 
