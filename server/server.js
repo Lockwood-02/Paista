@@ -8,6 +8,10 @@ const port = process.env.PORT || 5000;
 const dbPath = path.resolve(__dirname, '../data/database.db');
 const db = new sqlite3.Database(dbPath);
 
+app.get('/api/test', (req, res) => {
+    res.json({sanity:"check"});
+})
+
 app.get('/api/data', (req, res) => {
     db.all('SELECT * FROM your_table_name', (err, rows) => {
         if (err) {
@@ -19,6 +23,7 @@ app.get('/api/data', (req, res) => {
     });
 });
 
+//a copy?
 app.get('/api/data', (req, res) => {
     db.all('SELECT * FROM your_table_name', (err, rows) => {
         if (err) {
@@ -37,5 +42,3 @@ app.get('/api/data', (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
-
-//branch feat/sequalize
