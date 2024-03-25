@@ -5,11 +5,21 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 5000;
 
-const dbPath = path.resolve(__dirname, '../data/database.db');
-const db = new sqlite3.Database(dbPath);
+//depricated with sequelize
+//const dbPath = path.resolve(__dirname, '../data/database.db');
+//const db = new sqlite3.Database(dbPath);
+const {sequelize, Topic} = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
 
-app.get('/api/test', (req, res) => {
-    res.json({sanity:"check"});
+//synchronize to test db setup, developement only
+sequelize.sync().then(() => {
+    console.log('Database synced');
+  }).catch(err => {
+    console.error('Error syncing database:', err);
+  });
+
+app.get('/api/test', async (req, res) => {
+    const topics = await Topic.findAll();
+    res.json(topics);
 })
 
 app.get('/api/data', (req, res) => {
