@@ -5,10 +5,24 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import HomePage from './components/HomePage';
 
+//React Router
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
+
+const router = createBrowserRouter([
+  {
+    path:"/",
+    element: <HomePage />
+  },
+  {
+    path:"devTest",
+    element: <div>Hello World</div>
+  }
+])
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <HomePage />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 
