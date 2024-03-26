@@ -4,11 +4,26 @@ import './index.css';
 // import App from './App';
 import reportWebVitals from './reportWebVitals';
 import HomePage from './components/HomePage';
+import DevTest from './components/DevTest';
+
+//React Router
+import {createBrowserRouter, RouterProvider} from "react-router-dom";
+
+const router = createBrowserRouter([
+  {
+    path:"/",
+    element: <HomePage />
+  },
+  {
+    path:"devTest",
+    element: <DevTest />
+  }
+])
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <HomePage />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 
