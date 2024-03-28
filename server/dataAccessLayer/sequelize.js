@@ -49,8 +49,15 @@ const User = sequelize.define('User', {
         primaryKey: true,
         autoIncrement: true
     },
-    username: DataTypes.STRING,
-    password: DataTypes.STRING,
+    username: { // Updated username to set restrictions
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true // Ensure usernames are unique
+      },
+      password: { // Updated password so that it cannot be null
+        type: DataTypes.STRING,
+        allowNull: false
+      },
     class: DataTypes.INTEGER,
     banned: DataTypes.BOOLEAN,
     dateCreated: DataTypes.DATE,
