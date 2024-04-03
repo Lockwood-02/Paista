@@ -104,7 +104,7 @@ app.get('/api/getUser', (req, res) => {
     res.json({username:req.session.user ?? "not_logged_in"})
 })
 
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     console.log("login route called")//debug
     try {
         // Extract form data from request body
