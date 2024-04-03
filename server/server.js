@@ -85,20 +85,20 @@ app.get('/api/data', (req, res) => {
     });
 });
 
-//a copy?
-app.get('/api/data', (req, res) => {
-    db.all('SELECT * FROM your_table_name', (err, rows) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Internal Server Error');
-            return;
-        }
-
-        console.log('Data from the database:', rows); // Log the data
-
-        res.json(rows);
+//used in testing session
+app.get('/api/sessionTest', (req, res) => {
+    console.log("current phrase: ", req.session.phrase);
+    res.json({
+        phrase: req.session.phrase ?? "default"
     });
 });
+
+app.post('/api/sessionTest', (req, res) => {
+    console.log("setting phrase: ", req.body.phrase);
+    req.session.phrase = req.body.phrase
+    res.json(req.data);
+})
+
 
 //moved from paistaApp/app.js
 // catch 404 and forward to error handler
