@@ -7,7 +7,7 @@ const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
-const bcrypt = require('bcrypt');
+
 
 const app = express();
 const port = process.env.PORT || 5000;

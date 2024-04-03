@@ -1,0 +1,63 @@
+import React, {useState} from 'react';
+import axiosInstance from '../modules/axiosInstance';
+import { useNavigate } from 'react-router-dom';
+
+
+const Signup = () => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const nav = useNavigate();
+
+    const handleSignup = async (e) => {
+        e.preventDefault();
+        //mild client side validation
+        if(!username || !password || !firstName || !lastName || !email){
+            alert("Please complete all feilds");
+            return;
+        }
+
+        try{
+            const res = await axiosInstance.post("api/signup", {
+                username:username,
+                password:password,
+                email:email,
+                firstName:firstName,
+                lastName:lastName
+            });
+            console.log(res.data);//debugging
+            nav('/login') //send user to the login page
+        } catch (err){
+            console.error('Error signing up user: ', err);
+        }
+    }
+
+    return (
+        <div>
+            <h1>Sign Up</h1>
+            <form onSubmit={handleSignup}>
+                <label htmlFor="username">Username:</label>
+                <input type="text" id="username" name="username" required value={username} onChange={(e) => setUsername(e.target.value)} /><br></br>
+                
+                <label htmlFor="password">Password:</label>
+                <input type="password" id="password" name="password" required value={password} onChange={(e) => setPassword(e.target.value)} /><br /><br />
+
+                <label htmlFor="email">Email:</label>
+                <input type="email" id="email" name="email" required value={email} onChange={(e) => setEmail(e.target.value)} /><br /><br />
+
+                <label htmlFor="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" required value={firstName} onChange={(e) => setFirstName(e.target.value)} /><br /><br />
+
+                <label htmlFor="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" required value={lastName} onChange={(e) => setLastName(e.target.value)} /><br /><br />
+
+                <button type='submit'>Sign up </button>
+            </form>
+        </div>
+
+    )
+}
+
+export default Signup;

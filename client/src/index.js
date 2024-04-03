@@ -5,6 +5,10 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import HomePage from './components/HomePage';
 import DevTest from './components/DevTest';
+import Signup from './components/Signup';
+import Login from './components/Login';
+
+//import {HomePage, DevTest, Signup, Login} from './components/';
 
 //React Router
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
@@ -17,6 +21,14 @@ const router = createBrowserRouter([
   {
     path:"devTest",
     element: <DevTest />
+  },
+  {
+    path:"signup",
+    element: <Signup />
+  },
+  {
+    path:"login",
+    element:<Login />
   }
 ])
 
