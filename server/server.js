@@ -8,6 +8,8 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 
+const session = require('express-session');
+const sequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -42,7 +44,19 @@ app.use(bodyParser.json());
 // Set up cookie parser middleware
 app.use(cookieParser());
 
+//session setup
+const sessionStore = new sequelizeStore({
+    db:sequelize
+});
 
+app.use(session({
+    secret:"TODO: change me",
+    resave:false,
+    saveUninitialized:false,
+    store: sessionStore
+}));
+
+sessionStore.sync();
 
 //synchronize to test db setup, developement only
 sequelize.sync().then(() => {
