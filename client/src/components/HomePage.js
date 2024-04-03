@@ -41,9 +41,7 @@ const HomePage = () => {
                     <div className='flex items-center mb-4'>
                         <img src={avatar} alt="Logo" className="mr-2 w-8 h-8" />
                         <p className="mb-2 cursor-pointer mt-2">
-                        {data.map(item =>(
-                            <p>{item.username}</p>
-                        ))}
+                        {data.username}
                         </p> {/* Put Username here */}
                     </div>
                     <ul>
