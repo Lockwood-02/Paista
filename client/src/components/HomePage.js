@@ -1,5 +1,5 @@
 // src/components/HomePage.js
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Post from './Post';
 import postData from './postData';
 import logo from '../PiastaFigma.png';
@@ -15,10 +15,8 @@ const HomePage = () => {
                 const res = await axiosInstance.get("api/getUser");
                 setData(res.data);
                 console.log(data);//debug
-                setLoading(false);
             } catch (err){
                 console.error('Error fetching username: ', err);
-                setLoading(false);
             }
         };
 
