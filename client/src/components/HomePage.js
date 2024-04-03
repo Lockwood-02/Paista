@@ -4,8 +4,33 @@ import Post from './Post';
 import postData from './postData';
 import logo from '../PiastaFigma.png';
 import avatar from '../blankPFPRound.png';
+import axiosInstance from "../modules/axiosInstance";
 
 const HomePage = () => {
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try{
+                const res = await axiosInstance.get("api/getUser");
+                setData(res.data);
+                console.log(data);//debug
+                setLoading(false);
+            } catch (err){
+                console.error('Error fetching username: ', err);
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+
+        return () => {
+            //cancel requests or do cleanup
+        };
+
+    },[]);
+
+
     return (
         <div className="flex">
             {/* Sidebar (Left) */}
@@ -17,7 +42,11 @@ const HomePage = () => {
                 <div className='ml-8'>
                     <div className='flex items-center mb-4'>
                         <img src={avatar} alt="Logo" className="mr-2 w-8 h-8" />
-                        <p className="mb-2 cursor-pointer mt-2">Profile</p>
+                        <p className="mb-2 cursor-pointer mt-2">
+                        {data.map(item =>(
+                            <p>{item.username}</p>
+                        ))}
+                        </p> {/* Put Username here */}
                     </div>
                     <ul>
                         <li className="mb-2 cursor-pointer">Help</li>
