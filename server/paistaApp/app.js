@@ -8,7 +8,7 @@ const bodyParser = require('body-parser'); // Import body-parser middleware
 const bcrypt = require('bcrypt');
 
 // Import Sequelize models
-const { sequelize, Topic, User, Post } = require('./Sequelize'); // Assuming your Sequelize setup is in a file named Sequelize.js
+const { sequelize, Topic, User, Post } = require('../dataAccessLayer/sequelize'); 
 
 var app = express();
 
