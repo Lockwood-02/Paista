@@ -8,6 +8,8 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 
+const bcrypt = require('bcrypt');
+
 const session = require('express-session');
 const sequelizeStore = require('connect-session-sequelize')(session.Store);
 
