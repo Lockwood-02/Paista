@@ -53,13 +53,16 @@ router.post('/login', async (req, res) => {
             // User not found, handle accordingly (e.g., display error message)
             return res.status(404).send('User not found');
         }
+        
   
         // Compare the hashed password from the database with the password provided
-        const passwordMatch = await bcrypt.compare(password, user.password);
+        console.log("User:", user.username, "Hashed:", user.hashedPassword);
+        console.log("Password:", password, "User password:", user.password); // Testing to see if there are values
+        const passwordMatch = await bcrypt.compare(password, user.hashedPassword); // Using hashedPassword gives 302
   
         if (passwordMatch) {
             // Passwords match, redirect to dashboard or homepage
-            res.redirect('/dashboard');
+            res.sendStatus(200);
         } else {
             // Passwords don't match, handle accordingly (e.g., display error message)
             res.status(401).send('Invalid credentials');

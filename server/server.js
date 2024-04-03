@@ -20,12 +20,13 @@ const {sequelize, Topic, User, Post} = require('./dataAccessLayer/sequelize.js')
 
 //cors setup for communication with front-end
 app.use(function(req, res, next){
+    // This is causing an error when trying to get to the home page from the login page
     res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Origin', req.headers.origin); //TODO: This MUST be updated to the production URL
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
     if ('OPTIONS' == req.method) {
-        res.send(200);
+        res.sendStatus(200);
     } else {
         next();
     }
@@ -71,20 +72,6 @@ app.get('/api/data', (req, res) => {
     });
 });
 
-//a copy?
-app.get('/api/data', (req, res) => {
-    db.all('SELECT * FROM your_table_name', (err, rows) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Internal Server Error');
-            return;
-        }
-
-        console.log('Data from the database:', rows); // Log the data
-
-        res.json(rows);
-    });
-});
 
 //moved from paistaApp/app.js
 // catch 404 and forward to error handler
