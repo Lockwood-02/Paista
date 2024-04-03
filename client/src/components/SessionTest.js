@@ -5,18 +5,18 @@ const SessionTest = () => {
     const [phrase, setPhrase] = useState('Default');
     const [input, setInput] = useState('');
 
-    useEffect(() => {
-        const fetchPhrase = async () => {
-            try{
-                const res = await axiosInstance.get("api/sessionTest");
-                console.log(res.data)//debug
-                setPhrase(res.data.phrase);
-            }catch (err){
-                console.error("Error fetching phrase: ", err);
-                setPhrase("Error");
-            }
-        };
+    const fetchPhrase = async () => {
+        try{
+            const res = await axiosInstance.get("api/sessionTest");
+            console.log(res.data)//debug
+            setPhrase(res.data.phrase);
+        }catch (err){
+            console.error("Error fetching phrase: ", err);
+            setPhrase("Error");
+        }
+    };
 
+    useEffect(() => {
         fetchPhrase();
 
         return () => {
@@ -32,6 +32,7 @@ const SessionTest = () => {
                 phrase:input
             });
             console.log(res.data);//debug
+            fetchPhrase();
         } catch (err){
             console.error("Error testing session functionality:", err);
         }
