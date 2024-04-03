@@ -3,13 +3,20 @@ const sqlite3 = require('sqlite3');
 const path = require('path');
 const cors = require('cors');
 
+const createError = require('http-errors');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const logger = require('morgan');
+const bcrypt = require('bcrypt');
+
 const app = express();
 const port = process.env.PORT || 5000;
 
-//depricated with sequelize
-//const dbPath = path.resolve(__dirname, '../data/database.db');
-//const db = new sqlite3.Database(dbPath);
-const {sequelize, Topic} = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
+//logging - may be removed in production
+app.use(logger('dev'));
+
+//sequelize setup
+const {sequelize, Topic, User, Post} = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
 
 //cors setup for communication with front-end
 app.use(function(req, res, next){
@@ -24,14 +31,29 @@ app.use(function(req, res, next){
     }
 }) 
 
+//allows client communication
 app.use(cors({origin:"http://localhost:3000"})); //can be changed based on env variable
+
+//parsing incoming data for easier reading
+// Set up body-parser middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+// Set up cookie parser middleware
+app.use(cookieParser());
+
+
 
 //synchronize to test db setup, developement only
 sequelize.sync().then(() => {
     console.log('Database synced');
-  }).catch(err => {
+}).catch(err => {
     console.error('Error syncing database:', err);
-  });
+});
+
+//import signup routes
+const signup = require('./routes/signup.js');
+app.use('/api',signup);
 
 app.get('/api/test', async (req, res) => {
     const topics = await Topic.findAll();
@@ -64,6 +86,22 @@ app.get('/api/data', (req, res) => {
     });
 });
 
+//moved from paistaApp/app.js
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    next(createError(404));
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
+});
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
