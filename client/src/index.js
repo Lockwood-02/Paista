@@ -7,6 +7,7 @@ import HomePage from './components/HomePage';
 import DevTest from './components/DevTest';
 import Signup from './components/Signup';
 import Login from './components/Login';
+import SessionTest from './components/SessionTest';
 
 //import {HomePage, DevTest, Signup, Login} from './components/';
 
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path:"login",
     element:<Login />
+  },
+  {
+    path:"sessionTest",
+    element:<SessionTest />
   }
 ])
 
