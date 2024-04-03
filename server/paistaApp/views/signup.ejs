@@ -1,29 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Sign Up</h1>
-    <form action="/signup" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="hashedPassword" required><br><br>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-
-        <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" name="firstName" required><br><br>
-
-        <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" name="lastName" required><br><br>
-
-        <input type="submit" value="Sign Up">
-    </form>
+<body class="bg-[#d9d9d9] flex justify-center items-center h-screen">
+    <div class="max-w-md mx-auto bg-[#d9d9d9] rounded-lg shadow-lg p-8">
+        <h2 class="text-2xl font-bold mb-4">Sign Up</h2>
+        <form action="/signup" method="post">
+            <div class="mb-4">
+                <label for="username" class="block text-gray-700 font-semibold mb-2">Username</label>
+                <input type="text" id="username" name="username" required
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                    placeholder="Enter your username">
+            </div>
+            <div class="mb-4">
+                <label for="username" class="block text-gray-700 font-semibold mb-2">First Name</label>
+                <input type="text" id="firstName" name="firstName" required
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                    placeholder="Enter your first name">
+            </div>
+            <div class="mb-4">
+                <label for="username" class="block text-gray-700 font-semibold mb-2">Last Name</label>
+                <input type="text" id="lastName" name="lastName" required
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                    placeholder="Enter your last name">
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 font-semibold mb-2">Email</label>
+                <input type="email" id="email" name="email" required
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                    placeholder="Enter your email">
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 font-semibold mb-2">Password</label>
+                <input type="password" id="password" name="hashedPassword" required
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                    placeholder="Enter your password">
+            </div>
+            <div class="flex items-center justify-between">
+                <button type="submit"
+                    class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                    value="Sign Up">Sign Up</button>
+            </div>
+        </form>
+    </div>
 </body>
+
 </html>
