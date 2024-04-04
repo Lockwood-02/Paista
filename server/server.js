@@ -20,10 +20,10 @@ const port = process.env.PORT || 5000;
 app.use(logger('dev'));
 
 //sequelize setup
-const {sequelize, Topic, User, Post} = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
+const { sequelize, Topic, User, Post } = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
 
 //cors setup for communication with front-end
-app.use(function(req, res, next){
+app.use(function (req, res, next) {
     // This is causing an error when trying to get to the home page from the login page
     res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Origin', req.headers.origin); //TODO: This MUST be updated to the production URL
@@ -34,10 +34,10 @@ app.use(function(req, res, next){
     } else {
         next();
     }
-}) 
+})
 
 //allows client communication
-app.use(cors({origin:"http://localhost:3000"})); //can be changed based on env variable
+app.use(cors({ origin: "http://localhost:3000" })); //can be changed based on env variable
 
 //parsing incoming data for easier reading
 // Set up body-parser middleware
@@ -49,13 +49,13 @@ app.use(cookieParser());
 
 //session setup
 const sessionStore = new sequelizeStore({
-    db:sequelize
+    db: sequelize
 });
 
 app.use(session({
-    secret:"TODO: change me",
-    resave:false,
-    saveUninitialized:false,
+    secret: "TODO: change me",
+    resave: false,
+    saveUninitialized: false,
     store: sessionStore
 }));
 
@@ -70,7 +70,7 @@ sequelize.sync().then(() => {
 
 //import signup routes
 const signup = require('./routes/signup.js');
-app.use('/api',signup);
+app.use('/api', signup);
 
 app.get('/api/test', async (req, res) => {
     const topics = await Topic.findAll();
@@ -103,7 +103,7 @@ app.post('/api/sessionTest', (req, res) => {
 })
 
 app.get('/api/getUser', (req, res) => {
-    res.json({username:req.session.user ?? "not_logged_in"})
+    res.json({ username: req.session.user ?? "not logged in" })
 })
 
 app.post('/api/login', async (req, res) => {
@@ -111,22 +111,22 @@ app.post('/api/login', async (req, res) => {
     try {
         // Extract form data from request body
         const { username, password } = req.body;
-  
+
         // Find the user by username
         const user = await User.findOne({ where: { username } });
-  
+
         // Check if the user exists
         if (!user) {
             // User not found, handle accordingly (e.g., display error message)
             return res.status(404).send('User not found');
         }
-        
-  
+
+
         // Compare the hashed password from the database with the password provided
         console.log("User:", user.username, "Hashed:", user.hashedPassword);
         console.log("Password:", password, "User password:", user.password); // Testing to see if there are values
         const passwordMatch = await bcrypt.compare(password, user.hashedPassword); // Using hashedPassword gives 302
-  
+
         if (passwordMatch) {
             // Passwords match, redirect to dashboard or homepage
             req.session.user = user.username;
@@ -142,16 +142,27 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+app.post('/api/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+        res.sendStatus(200);
+    });
+});
+
 
 
 //moved from paistaApp/app.js
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};

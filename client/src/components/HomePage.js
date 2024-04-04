@@ -1,5 +1,5 @@
 // src/components/HomePage.js
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Post from './Post';
 import postData from './postData';
 import logo from '../PiastaFigma.png';
@@ -8,15 +8,23 @@ import axiosInstance from "../modules/axiosInstance";
 
 const HomePage = () => {
     const [data, setData] = useState([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
-            try{
+            try {
                 const res = await axiosInstance.get("api/getUser");
                 setData(res.data);
                 console.log(data);//debug
-            } catch (err){
+
+                // Check if the username is "not logged in"
+                if (res.data.username === "not logged in") {
+                    setIsLoggedIn(false); // Set isLoggedIn to false if username is "not logged in"
+                }
+            } catch (err) {
                 console.error('Error fetching username: ', err);
+                setIsLoggedIn(false);
+                // console.log("not logged in");
             }
         };
 
@@ -26,28 +34,59 @@ const HomePage = () => {
             //cancel requests or do cleanup
         };
 
-    },[]);
+    }, []);
+
+    // Logout section
+    const handleLogout = async () => {
+        try {
+            await axiosInstance.post("api/logout");
+            // Redirect to login page
+            window.location.reload(); // For simplicity, reload the page after logout
+        } catch (error) {
+            console.error('Error logging out: ', error);
+        }
+    };
+
+    const handleUsernameClick = () => {
+        if (!isLoggedIn) {
+            window.location.href = "/login"; // Redirect to login page if not logged in
+        }
+        console.log("clicked");
+    };
+
+    // This makes it so if the user is not logged in they cannot view any page
+    // if (!isLoggedIn) { // Redirect to login page if user is not logged in
+    //     console.log("not logged in");
+    //     window.location.href = "/login";
+    // }
 
 
     return (
-        <div className="flex">
+        <div className="flex h-screen">
             {/* Sidebar (Left) */}
-            <div className="w-1/4 bg-back p-4">
-                <div className="flex items-center mb-4">
-                    <img src={logo} alt="Logo" className="mr-2 w-32 h-32" />
-                    <h1 className="text-4xl font-medium mb-4 mt-8 font-header">Paista</h1>
-                </div>
-                <div className='ml-8'>
-                    <div className='flex items-center mb-4'>
-                        <img src={avatar} alt="Logo" className="mr-2 w-8 h-8" />
-                        <p className="mb-2 cursor-pointer mt-2">
-                        {data.username}
-                        </p> {/* Put Username here */}
+            <div className="w-1/4 bg-back p-4 flex flex-col justify-between">
+                <div>
+                    <div className="flex items-center mb-4">
+                        <img src={logo} alt="Logo" className="mr-2 w-32 h-32" />
+                        <h1 className="text-4xl font-medium mb-4 mt-8 font-header">Paista</h1>
                     </div>
-                    <ul>
-                        <li className="mb-2 cursor-pointer">Help</li>
-                    </ul>
+                    <div className='ml-8'>
+                        <div className='flex items-center mb-4'>
+                            <img src={avatar} alt="Logo" className="mr-2 w-8 h-8" />
+                            <p className="mb-2 cursor-pointer mt-2" onClick={handleUsernameClick}>
+                                {data.username}
+                            </p>
+                        </div>
+                        <ul>
+                            <li className="mb-2 cursor-pointer">Help</li>
+                        </ul>
+                    </div>
                 </div>
+                {/* Logout button */}
+                <div className='p-4'>
+                    <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-4 rounded mt-4 self-start">Logout</button>
+                </div>
+
             </div>
 
             {/* Main Content */}
