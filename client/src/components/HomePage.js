@@ -10,6 +10,10 @@ const HomePage = () => {
     const [data, setData] = useState([]);
     const [isLoggedIn, setIsLoggedIn] = useState(true);
 
+    // Search functions 
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -36,6 +40,25 @@ const HomePage = () => {
 
     }, []);
 
+    // For searching
+    useEffect(() => {
+        const fetchSearchResults = async () => {
+            try {
+                const res = await axiosInstance.get(`/api/topics?query=${searchQuery}`);
+                setSearchResults(res.data);
+            } catch (error) {
+                console.error('Error searching topics:', error);
+            }
+        };
+
+        if (searchQuery !== '') {
+            fetchSearchResults();
+        } else {
+            setSearchResults([]);
+        }
+    }, [searchQuery]);
+
+
     // Logout section
     const handleLogout = async () => {
         try {
@@ -52,6 +75,14 @@ const HomePage = () => {
             window.location.href = "/login"; // Redirect to login page if not logged in
         }
         console.log("clicked");
+    };
+
+    const handleSearchSubmit = () => {
+        // Fetch search results when search button is clicked
+        if (searchQuery.trim() !== '') {
+            setSearchResults([]); // Clear previous search results
+            setSearchQuery(searchQuery.trim());
+        }
     };
 
     // This makes it so if the user is not logged in they cannot view any page
@@ -94,12 +125,38 @@ const HomePage = () => {
                 <div className="mb-4">
                     <h1 className="text-4xl font-medium font-header">Home</h1>
                 </div>
+                {/* Search bar */}
+                <div className="w-full p-4 flex justify-between">
+                    <input
+                        type="text"
+                        placeholder="Search topics..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full border rounded px-4 py-2"
+                    />
+                    <button
+                        onClick={handleSearchSubmit}
+                        className="ml-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                        Search
+                    </button>
+                </div>
                 <div >
                     {/* Render posts using the Post component */}
                     {postData.map((post, index) => (
                         <Post key={index} course={post.course} title={post.title} description={post.description} />
                     ))}
                 </div>
+
+                {/* Render search results (FOR WHEN WE GET THIS SETUP) */}
+                {/* <div className="w-full p-4">
+                    {searchResults.map(topic => (
+                        <div key={topic.id}>
+                            <h2>{topic.title}</h2>
+                            <p>{topic.description}</p>
+                        </div>
+                    ))}
+                </div> */}
             </div>
 
             {/* Sidebar (Right) */}

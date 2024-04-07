@@ -154,6 +154,26 @@ app.post('/api/logout', (req, res) => {
 });
 
 
+// Search Route
+app.get('/api/topics', async (req, res) => {
+    const { query } = req.query;
+
+    try {
+        const topics = await Topic.findAll({
+            where: {
+                title: {
+                    [sequelize.Sequelize.Op.iLike]: `%${query}%`
+                }
+            }
+        });
+        res.json(topics);
+    } catch (error) {
+        console.error('Error searching topics:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 //moved from paistaApp/app.js
 // catch 404 and forward to error handler
