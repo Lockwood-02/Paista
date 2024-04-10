@@ -23,10 +23,6 @@ const port = process.env.PORT || 5000;
 require('dotenv').config();
 const runner = require('./runTests.js');
 
-//testing
-require('dotenv').config();
-const runner = require('./runTests.js');
-
 //logging - may be removed in production
 app.use(logger('dev'));
 
@@ -76,12 +72,10 @@ app.use(session({
     store: sessionStore
 }));
 
-sessionStore.sync({logging: false});
-sessionStore.sync({logging: false});
+sessionStore.sync({ logging: false });
 
 //synchronize to test db setup, developement only
-sequelize.sync({logging: false}).then(() => {
-sequelize.sync({logging: false}).then(() => {
+sequelize.sync({ logging: false }).then(() => {
     console.log('Database synced');
 }).catch(err => {
     console.error('Error syncing database:', err);
@@ -122,7 +116,7 @@ app.post('/api/sessionTest', (req, res) => {
     console.log("setting phrase: ", req.body.phrase);
     req.session.phrase = req.body.phrase
     res.json(req.data);
-})
+});
 
 app.get('/api/getUser', (req, res) => {
     res.json({username:req.session.user ?? "not_logged_in"})
@@ -177,4 +171,4 @@ app.listen(port, () => {
             console.log("Invalid test suite: ", e);
         }
     }
-});
+})
