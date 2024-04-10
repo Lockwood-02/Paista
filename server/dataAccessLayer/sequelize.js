@@ -10,7 +10,7 @@ const sequelize = new Sequelize({
 // const sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname');
 
 // Define the Topic model
-const Topic = sequelize.define('Topic', {
+const Topics = sequelize.define('Topics', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -129,7 +129,7 @@ sequelize.sync()
 
 module.exports = {
     sequelize,
-    Topic,
+    Topics,
     User,
     Post,
     Access,
