@@ -24,7 +24,7 @@ const port = process.env.PORT || 5000;
 app.use(logger('dev'));
 
 //sequelize setup
-const { sequelize, Topic, POST, Users, Accesses } = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
+const { sequelize, Topics, Posts, Users, Accesses } = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
 
 //cors setup for communication with front-end
 app.use(function(req, res, next){
@@ -83,7 +83,7 @@ const signup = require('./routes/signup.js');
 app.use('/api',signup);
 
 app.get('/api/test', async (req, res) => {
-    const topics = await Topic.findAll();
+    const topics = await Topics.findAll();
     res.json(topics);
 })
 
