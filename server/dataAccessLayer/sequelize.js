@@ -43,14 +43,14 @@ const Topics = sequelize.define('Topics', {
 });
 
 // Define other necessary models such as User, Post, Access, TitleHistory, Votes, and EditHistory
-const User = sequelize.define('User', {
+const Users = sequelize.define('Users', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
     username: DataTypes.STRING,
-    hashedPassword: DataTypes.STRING, 
+    hashedPassword: DataTypes.STRING,
     class: DataTypes.INTEGER,
     banned: DataTypes.BOOLEAN,
     dateCreated: DataTypes.DATE,
@@ -65,7 +65,7 @@ const User = sequelize.define('User', {
     lastName: DataTypes.STRING
 });
 
-const Post = sequelize.define('Post', {
+const Posts = sequelize.define('Post', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -78,16 +78,31 @@ const Post = sequelize.define('Post', {
     type: DataTypes.STRING
 });
 
-const Access = sequelize.define('Access', {
-    id: {
+const Accesses = sequelize.define('Accesses', {
+    ID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    accessType: DataTypes.STRING
+    Users_ID: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    Topic_ID: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    Access_Type: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
 });
 
-const TitleHistory = sequelize.define('TitleHistory', {
+// Define the foreign key constraints
+Accesses.belongsTo(Users, { foreignKey: 'Users_ID' });
+Accesses.belongsTo(Topics, { foreignKey: 'Topic_ID' });
+
+const TitleHistories = sequelize.define('TitleHistory', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -105,7 +120,7 @@ const Votes = sequelize.define('Votes', {
     }
 });
 
-const EditHistory = sequelize.define('EditHistory', {
+const EditHistories = sequelize.define('EditHistory', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -130,10 +145,10 @@ sequelize.sync()
 module.exports = {
     sequelize,
     Topics,
-    User,
-    Post,
-    Access,
-    TitleHistory,
+    Users,
+    Posts,
+    Accesses,
+    TitleHistories,
     Votes,
-    EditHistory
+    EditHistories
 };
