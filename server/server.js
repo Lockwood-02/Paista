@@ -17,7 +17,8 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 //testing
-const tester = require('./runTests');
+require('dotenv').config();
+const runner = require('./runTests.js');
 
 //logging - may be removed in production
 app.use(logger('dev'));
@@ -165,9 +166,13 @@ app.use(function(err, req, res, next) {
 });
 
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-    if(proccess.env.NODE_ENV == 'test'){
+    console.log(`Server is running on port ${port} environment type: ${process.env.NODE_ENV}`);
+    if(process.env.NODE_ENV == 'test'){
         console.log("Running tests...");
-        tester.util('tdd').run();
+        try{
+            runner.run();
+        }catch(e){
+            console.log("Invalid test suite: ", e);
+        }
     }
 });
