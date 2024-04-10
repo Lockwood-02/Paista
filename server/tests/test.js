@@ -27,8 +27,9 @@ suite('Example Tests', function() {
           return browser.visit('/',done);
         })      
         test('Zombie demo', function(done){
-            browser.assert.isNotNull(browser.site);
-            browser.assert.text('h1','Paista');
+            assert.isNotNull(browser.site);
+            const h1Elements = browser.queryAll('h1');
+            assert.equal(h1Elements[0].textContent, 'Paista');
             done();
         });
         suiteTeardown(function(){
