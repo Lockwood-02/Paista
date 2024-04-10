@@ -16,9 +16,9 @@ module.exports = function(app){
     });
     
     passport.deserializeUser(async (id,done) => {
-        console.log("deserializing user");
+        console.log("deserializing user: ", id);
         try{
-            const user = await User.findByPk(id);
+            const user = await User.findByPk(id._id);
             done(null,user);
         }catch(err){
             console.log("Error deserializing");

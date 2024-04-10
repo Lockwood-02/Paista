@@ -103,7 +103,7 @@ app.post('/api/sessionTest', (req, res) => {
 })
 
 app.get('/api/getUser', (req, res) => {
-    res.json({username:req.session.user ?? "not_logged_in"})
+    res.json({username:req.user.username ?? "not_logged_in"})
 })
 
 //moved from paistaApp/app.js
