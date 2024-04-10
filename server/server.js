@@ -70,7 +70,7 @@ sequelize.sync().then(() => {
 
 //import signup routes
 const signup = require('./routes/signup.js');
-app.use('/api',signup);
+signup(app)
 
 app.get('/api/test', async (req, res) => {
     const topics = await Topic.findAll();
