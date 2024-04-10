@@ -1,13 +1,11 @@
 //Includes routes related to authentication that were formerly in the "paistaApp" directory
 //routes will be implemented under /api/ in serverj.js
 const bcrypt = require('bcrypt');
-const {Topic, User, Post} = require('../dataAccessLayer/sequelize');
-
-
+const { User } = require('../dataAccessLayer/sequelize');
 const express = require('express');
-const router = express.Router();
-
-//routes from paistaApp/app.js
+const router = express.Router
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 router.post('/signup', async (req, res) => {
     console.log("Signup route called")//debug
@@ -75,5 +73,41 @@ router.post('/login', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+//passport setup
+passport.serializeUser((user,done) =>{
+    done(null,{_id:user.id});
+});
+
+passport.deserializeUser(async (id,done) => {
+    try{
+        const user = await User.findByPk(id);
+        done(null,user);
+    }catch(err){
+        console.log("Error deserializing");
+        done(err);
+    }
+});
+
+passport.use(new LocalStrategy(
+    async (username, password, done) => {
+        try{
+            const user = await User.findOne({
+                where:{
+                    username:username
+                }
+            })
+            if(!user || bcrypt.compareSync(user.hashedPassword, password)){
+                return done(null, user);//return all data stored in the user object
+            }else{
+                console.log("Attempt to login with wrong username/password");
+                return done(null, false);//wrong password
+            }
+        }catch(err){
+            done(err);
+        }
+        
+    }
+))
 
 module.exports = router;
