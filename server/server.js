@@ -19,6 +19,8 @@ const accessRouter = require('../server/routes/routerAccess.js');
 const app = express();
 const port = process.env.PORT || 5000;
 
+//testing
+const tester = require('./runTests');
 
 //logging - may be removed in production
 app.use(logger('dev'));
@@ -156,4 +158,8 @@ app.post('/api/login', async (req, res) => {
 });
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
+    if(proccess.env.NODE_ENV == 'test'){
+        console.log("Running tests...");
+        tester.util('tdd').run();
+    }
 });
