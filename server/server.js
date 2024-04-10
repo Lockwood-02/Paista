@@ -123,6 +123,15 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
+//use this route as middleware to limit a route to authenticated users only
+function ensureAuthenticated(req,res,next) {
+    if(req.isAuthenticated()){
+      return next();
+    }
+    res.sendStatus(401);//not authenticated
+  };
+
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
