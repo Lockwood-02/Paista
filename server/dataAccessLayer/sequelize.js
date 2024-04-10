@@ -133,7 +133,7 @@ const EditHistories = sequelize.define('EditHistory', {
 // Define associations between models if necessary
 
 // Synchronize Sequelize models with the database
-sequelize.sync()
+sequelize.sync({logging:false})
   .then(() => {
     console.log('Tables synchronized successfully');
     // Your application logic here
