@@ -72,6 +72,10 @@ sequelize.sync().then(() => {
 const signup = require('./routes/signup.js');
 app.use('/api',signup);
 
+//topic search route
+const topicSearch = require('./routes/topicSearch.js');
+app.use('/api',topicSearch);+
+
 app.get('/api/test', async (req, res) => {
     const topics = await Topic.findAll();
     res.json(topics);
