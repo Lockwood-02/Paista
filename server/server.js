@@ -12,15 +12,19 @@ const bcrypt = require('bcrypt');
 
 const session = require('express-session');
 const sequelizeStore = require('connect-session-sequelize')(session.Store);
+const topicsRouter = require('../server/routes/routerTopic.js');
+const accessRouter = require('../server/routes/routerAccess.js');
+
 
 const app = express();
 const port = process.env.PORT || 5000;
+
 
 //logging - may be removed in production
 app.use(logger('dev'));
 
 //sequelize setup
-const {sequelize, Topic, User, Post} = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
+const { sequelize, Topics, Posts, Users, Accesses } = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
 
 //cors setup for communication with front-end
 app.use(function(req, res, next){
@@ -46,6 +50,12 @@ app.use(bodyParser.json());
 
 // Set up cookie parser middleware
 app.use(cookieParser());
+
+// Use the topicsRouter for routes starting with /topics
+app.use('/api', topicsRouter);
+
+// Mount the access router
+app.use('/api', accessRouter);
 
 //session setup
 const sessionStore = new sequelizeStore({
@@ -73,9 +83,12 @@ const signup = require('./routes/signup.js');
 app.use('/api',signup);
 
 app.get('/api/test', async (req, res) => {
-    const topics = await Topic.findAll();
+    const topics = await Topics.findAll();
     res.json(topics);
 })
+
+// Mount the access router
+app.use('/api', accessRouter);
 
 app.get('/api/data', (req, res) => {
     db.all('SELECT * FROM your_table_name', (err, rows) => {
@@ -104,7 +117,7 @@ app.post('/api/sessionTest', (req, res) => {
 
 app.get('/api/getUser', (req, res) => {
     res.json({username:req.session.user ?? "not_logged_in"})
-})
+});
 
 app.post('/api/login', async (req, res) => {
     console.log("login route called")//debug
@@ -113,7 +126,7 @@ app.post('/api/login', async (req, res) => {
         const { username, password } = req.body;
   
         // Find the user by username
-        const user = await User.findOne({ where: { username } });
+        const user = await Users.findOne({ where: { username } });
   
         // Check if the user exists
         if (!user) {
@@ -141,26 +154,6 @@ app.post('/api/login', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-
-
-//moved from paistaApp/app.js
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
-});
-
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
