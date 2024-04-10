@@ -165,6 +165,9 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
+//for testing with chai
+module.exports = app;
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port} environment type: ${process.env.NODE_ENV}`);
     if(process.env.NODE_ENV == 'test'){
