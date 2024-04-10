@@ -23,6 +23,10 @@ const port = process.env.PORT || 5000;
 require('dotenv').config();
 const runner = require('./runTests.js');
 
+//testing
+require('dotenv').config();
+const runner = require('./runTests.js');
+
 //logging - may be removed in production
 app.use(logger('dev'));
 
@@ -73,8 +77,10 @@ app.use(session({
 }));
 
 sessionStore.sync({logging: false});
+sessionStore.sync({logging: false});
 
 //synchronize to test db setup, developement only
+sequelize.sync({logging: false}).then(() => {
 sequelize.sync({logging: false}).then(() => {
     console.log('Database synced');
 }).catch(err => {
