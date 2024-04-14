@@ -83,7 +83,7 @@ sequelize.sync({ logging: false }).then(() => {
 
 //import signup routes
 const signup = require('./routes/signup.js');
-app.use('/api',signup);
+signup(app)
 
 //topic search route
 const topicSearch = require('./routes/topicSearch.js');
@@ -123,6 +123,27 @@ app.post('/api/sessionTest', (req, res) => {
 });
 
 app.get('/api/getUser', (req, res) => {
+
+    res.json({username:req.user.username ?? "not_logged_in"})
+})
+
+//moved from paistaApp/app.js
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    next(createError(404));
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
+});
+
     res.json({username:req.session.user ?? "not_logged_in"})
 });
 
@@ -164,6 +185,15 @@ app.post('/api/login', async (req, res) => {
 
 //for testing with chai
 module.exports = app;
+
+//use this route as middleware to limit a route to authenticated users only
+function ensureAuthenticated(req,res,next) {
+    if(req.isAuthenticated()){
+      return next();
+    }
+    res.sendStatus(401);//not authenticated
+  };
+
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port} environment type: ${process.env.NODE_ENV}`);
