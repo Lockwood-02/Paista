@@ -65,19 +65,71 @@ const Users = sequelize.define('Users', {
     lastName: DataTypes.STRING
 });
 
-const Posts = sequelize.define('Post', {
-    id: {
+// Define the Posts model with foreign key constraints
+const Posts = sequelize.define('Posts', {
+    ID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    title: DataTypes.STRING,
-    body: DataTypes.STRING,
-    deleted: DataTypes.BOOLEAN,
-    anonymous: DataTypes.BOOLEAN,
-    type: DataTypes.STRING
+    Creator_ID: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'Users', // Referencing the Users table
+            key: 'id'      // Referencing the ID column in the Users table
+        }
+    },
+    Thread_ID: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'Posts', // Referencing the Posts table
+            key: 'ID'      // Referencing the ID column in the Posts table
+        }
+    },
+    Topic_ID: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'Topics', // Referencing the Topics table
+            key: 'id'       // Referencing the ID column in the Topics table
+        }
+    },
+    Solution_ID: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'Posts', // Referencing the Posts table
+            key: 'ID'      // Referencing the ID column in the Posts table
+        }
+    },
+    Title: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    Body: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    Deleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    Anonymous: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    Type: {
+        type: DataTypes.ENUM('Announcement', 'Resolved', 'Unresolved'),
+        allowNull: false
+    }
 });
 
+// Define associations for Posts
+Posts.belongsTo(Users, { foreignKey: 'Creator_ID', onDelete: 'NO ACTION' });
+Posts.belongsTo(Topics, { foreignKey: 'Topic_ID', onDelete: 'NO ACTION' });
+
+
+// Define the Access model with foreign key constraints
 const Accesses = sequelize.define('Accesses', {
     ID: {
         type: DataTypes.INTEGER,
@@ -98,20 +150,33 @@ const Accesses = sequelize.define('Accesses', {
     }
 });
 
-// Define the foreign key constraints
+// Define the foreign key constraints for Accesses
 Accesses.belongsTo(Users, { foreignKey: 'Users_ID' });
 Accesses.belongsTo(Topics, { foreignKey: 'Topic_ID' });
 
+
+// Define the TitleHistories model with foreign key constraints
 const TitleHistories = sequelize.define('TitleHistory', {
-    id: {
+    ID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    previousTitle: DataTypes.STRING,
-    timestamp: DataTypes.DATE
+    Previous_Title: {
+        type: DataTypes.STRING,
+        allowNull: false // Assuming previous title cannot be null
+    },
+    Timestamp: {
+        type: DataTypes.DATE,
+        allowNull: false // Assuming timestamp cannot be null
+    }
 });
 
+// Define associations for TitleHistories
+TitleHistories.belongsTo(Topics, { foreignKey: 'Topic_ID', onDelete: 'CASCADE' });
+
+
+// Define the Votes model with foreign key constraints
 const Votes = sequelize.define('Votes', {
     id: {
         type: DataTypes.INTEGER,

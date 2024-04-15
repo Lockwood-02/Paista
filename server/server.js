@@ -14,7 +14,8 @@ const session = require('express-session');
 const sequelizeStore = require('connect-session-sequelize')(session.Store);
 const topicsRouter = require('../server/routes/routerTopic.js');
 const accessRouter = require('../server/routes/routerAccess.js');
-
+const postRouter = require('../server/routes/routerPost.js');
+const titleHistoryRouter = require('../server/routes/routerTitleHistory.js');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -43,6 +44,7 @@ app.use(function(req, res, next){
     }
 }) 
 
+
 //allows client communication
 app.use(cors({origin:"http://localhost:3000"})); //can be changed based on env variable
 
@@ -50,6 +52,8 @@ app.use(cors({origin:"http://localhost:3000"})); //can be changed based on env v
 // Set up body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+
 
 // Set up cookie parser middleware
 app.use(cookieParser());
@@ -59,6 +63,14 @@ app.use('/api', topicsRouter);
 
 // Mount the access router
 app.use('/api', accessRouter);
+
+// Mount the Posts router
+app.use('/api', postRouter);
+
+// Mount the TitleHistoy router
+app.use('/api',  titleHistoryRouter);
+
+
 
 //session setup
 const sessionStore = new sequelizeStore({
