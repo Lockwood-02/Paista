@@ -18,6 +18,7 @@ const postRouter = require('../server/routes/routerPost.js');
 const titleHistoryRouter = require('../server/routes/routerTitleHistory.js');
 const editHistoryRouter = require('../server/routes/routerEditHistory.js');
 const editUserRouter = require('../server/routes/routerUser.js');
+const editVoteRouter = require('../server/routes/routerVote.js');
 
 
 const app = express();
@@ -78,6 +79,9 @@ app.use('/api',  editHistoryRouter);
 
 // Mount the User router
 app.use('/api',  editUserRouter);
+
+// Mount the Vote router
+app.use('/api',  editVoteRouter);
 
 
 //session setup

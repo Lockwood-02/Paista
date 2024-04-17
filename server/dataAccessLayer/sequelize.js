@@ -226,8 +226,38 @@ const Votes = sequelize.define('Votes', {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
+    },
+    User_ID: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'Users',
+            key: 'id'
+        }
+    },
+    Post_ID: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'Posts',
+            key: 'id'
+        }
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     }
 });
+
+// Add foreign key constraints for User_ID and Post_ID
+Votes.belongsTo(Users, { foreignKey: 'User_ID', onDelete: 'CASCADE' });
+Votes.belongsTo(Posts, { foreignKey: 'Post_ID', onDelete: 'CASCADE' });
 
 
 
