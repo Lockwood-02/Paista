@@ -135,7 +135,7 @@ const EditHistories = sequelize.define('EditHistory', {
 // Synchronize Sequelize models with the database
 sequelize.sync({logging:false})
   .then(() => {
-    console.log('Tables synchronized successfully');
+    //console.log('Tables synchronized successfully');
     // Your application logic here
   })
   .catch((error) => {
