@@ -100,7 +100,7 @@ sessionStore.sync({ logging: false });
 
 //synchronize to test db setup, developement only
 sequelize.sync({ logging: false }).then(() => {
-    console.log('Database synced');
+    //console.log('Database synced');
 }).catch(err => {
     console.error('Error syncing database:', err);
 });
@@ -216,8 +216,9 @@ function ensureAuthenticated(req,res,next) {
       return next();
     }
     res.sendStatus(401);//not authenticated
-  };
+};
 
+require('./admin.js')();
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port} environment type: ${process.env.NODE_ENV}`);
