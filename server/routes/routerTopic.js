@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Topics } = require('../dataAccessLayer/sequelize.js');
+const { Topics, Users } = require('../dataAccessLayer/sequelize.js');
 
 // GET all topics
 router.get('/topics', async (req, res) => {
@@ -16,8 +16,8 @@ router.get('/topics', async (req, res) => {
 // POST create a new topic
 router.post('/topics', async (req, res) => {
   try {
-    const { title, description } = req.body;
-    const newTopic = await Topics.create({ title, description });
+    const { title, description, UserID } = req.body;
+    const newTopic = await Topics.create({ title, description, UserID });
     res.status(201).json(newTopic);
   } catch (error) {
     console.error('Error creating topic:', error);

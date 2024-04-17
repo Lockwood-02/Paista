@@ -9,6 +9,29 @@ const sequelize = new Sequelize({
 // If using online storage, replace the above with:
 // const sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname');
 
+// Define the Users model
+const Users = sequelize.define('Users', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    username: DataTypes.STRING,
+    hashedPassword: DataTypes.STRING,
+    userClass: DataTypes.INTEGER,
+    banned: DataTypes.BOOLEAN,
+    dateCreated: DataTypes.DATE,
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            isEmail: true // Ensure email format is valid
+        }
+    },
+    firstName: DataTypes.STRING,
+    lastName: DataTypes.STRING
+});
+
 // Define the Topic model
 const Topics = sequelize.define('Topics', {
     id: {
@@ -42,28 +65,12 @@ const Topics = sequelize.define('Topics', {
     }
 });
 
-// Define other necessary models such as User, Post, Access, TitleHistory, Votes, and EditHistory
-const Users = sequelize.define('Users', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    username: DataTypes.STRING,
-    hashedPassword: DataTypes.STRING,
-    userClass: DataTypes.INTEGER,
-    banned: DataTypes.BOOLEAN,
-    dateCreated: DataTypes.DATE,
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            isEmail: true // Ensure email format is valid
-        }
-    },
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING
-});
+// Define associations
+Users.hasMany(Topics, { foreignKey: 'userID' });
+
+// Define the association between Users and Topics
+Topics.belongsTo(Users, { foreignKey: 'userID' });
+
 
 // Define the Posts model with foreign key constraints
 const Posts = sequelize.define('Posts', {
@@ -273,11 +280,11 @@ sequelize.sync({logging:false})
 
 module.exports = {
     sequelize,
-    Topics,
     Users,
     Posts,
     Accesses,
     TitleHistories,
     Votes,
-    EditHistories
+    EditHistories,
+    Topics
 };
