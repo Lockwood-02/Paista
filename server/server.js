@@ -16,6 +16,9 @@ const topicsRouter = require('../server/routes/routerTopic.js');
 const accessRouter = require('../server/routes/routerAccess.js');
 const postRouter = require('../server/routes/routerPost.js');
 const titleHistoryRouter = require('../server/routes/routerTitleHistory.js');
+const editHistoryRouter = require('../server/routes/routerEditHistory.js');
+const editUserRouter = require('../server/routes/routerUser.js');
+
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -28,7 +31,7 @@ const runner = require('./runTests.js');
 app.use(logger('dev'));
 
 //sequelize setup
-const { sequelize, Topics, Posts, Users, Accesses } = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
+const { sequelize, Topics, Posts, Users, Accesses, EditHistories, TitleHistories } = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
 
 //cors setup for communication with front-end
 app.use(function(req, res, next){
@@ -70,6 +73,11 @@ app.use('/api', postRouter);
 // Mount the TitleHistoy router
 app.use('/api',  titleHistoryRouter);
 
+// Mount the EditHistoy router
+app.use('/api',  editHistoryRouter);
+
+// Mount the User router
+app.use('/api',  editUserRouter);
 
 
 //session setup

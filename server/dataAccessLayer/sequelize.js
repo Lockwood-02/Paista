@@ -51,7 +51,7 @@ const Users = sequelize.define('Users', {
     },
     username: DataTypes.STRING,
     hashedPassword: DataTypes.STRING,
-    class: DataTypes.INTEGER,
+    userClass: DataTypes.INTEGER,
     banned: DataTypes.BOOLEAN,
     dateCreated: DataTypes.DATE,
     email: {
@@ -156,7 +156,7 @@ Accesses.belongsTo(Topics, { foreignKey: 'Topic_ID' });
 
 
 // Define the TitleHistories model with foreign key constraints
-const TitleHistories = sequelize.define('TitleHistory', {
+const TitleHistories = sequelize.define('TitleHistories', {
     ID: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -176,6 +176,50 @@ const TitleHistories = sequelize.define('TitleHistory', {
 TitleHistories.belongsTo(Topics, { foreignKey: 'Topic_ID', onDelete: 'CASCADE' });
 
 
+// Define the EditHistories model with foreign key constraints
+const EditHistories = sequelize.define('EditHistory', {
+    ID: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    Post_ID: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'Posts',
+            key: 'ID'
+        }
+    },
+    Previous_Edit: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    Timestamp: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+        field: 'created_at'
+    },
+    updated_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+        field: 'updated_at'
+    }
+}, {
+    tableName: 'EditHistories',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
+});
+
+// Associations for EditHistories
+EditHistories.belongsTo(Posts, { foreignKey: 'Post_ID', onDelete: 'CASCADE' });
+
+
 // Define the Votes model with foreign key constraints
 const Votes = sequelize.define('Votes', {
     id: {
@@ -185,17 +229,7 @@ const Votes = sequelize.define('Votes', {
     }
 });
 
-const EditHistories = sequelize.define('EditHistory', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    previousEdit: DataTypes.STRING,
-    timestamp: DataTypes.DATE
-});
 
-// Define associations between models if necessary
 
 // Synchronize Sequelize models with the database
 sequelize.sync({logging:false})
