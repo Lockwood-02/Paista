@@ -21,35 +21,40 @@ module.exports = async function() {
             output: process.stdout
         })
 
-        rl.stdoutMuted = true;
 
         function getUser() {
             return new Promise( (resolve, rej) => {        
-                rl.question('Username:', (res) =>{
+                rl.question('Username:\n', (res) =>{
                     if(res){
                         username = res;
                     }
-                    console.log("Username is: ", res);
                     resolve(res);
                 });
             })
         }
         await getUser();
-        console.log("Got user");
-
+        
+        rl._writeToOutput = function _writeToOutput(stringToWrite) {
+            if (rl.stdoutMuted)
+              rl.output.write("");
+            else
+              rl.output.write(stringToWrite);
+          };
+        
+        rl.stdoutMuted = true;
         function getPassword() {
             return new Promise( (resolve, rej) => {
-                rl.question('Password:', async (password) => {
+                console.log("Password:")
+                rl.question('', async (password) => {
                     const hashedPassword = await bcrypt.hash(password, 10);
                     try {
-                        /*const admin = await Users.create({
+                        const admin = await Users.create({
                             username: username,
                             hashedPassword: hashedPassword,
                             class: 2,
                             banned: false,
                             email:'test@gmail.com',
-                        });*/
-                        const admin = username;
+                        });
                         console.log("Successfully created admin account : ", admin.username);
                         resolve(admin);
                     }catch(err){
@@ -64,15 +69,9 @@ module.exports = async function() {
         console.log("admin account created! Server is running...");
         rl.close();
 
-        rl._writeToOutput = function _writeToOutput(stringToWrite) {
-            if (rl.stdoutMuted)
-              rl.output.write("*");
-            else
-              rl.output.write(stringToWrite);
-          };
           
     }else{
-        console.log("Admin account already exists");
+        console.log("Admin account already exists. Server is running...");
     }
 
     return;
