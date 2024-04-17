@@ -14,6 +14,11 @@ const session = require('express-session');
 const sequelizeStore = require('connect-session-sequelize')(session.Store);
 const topicsRouter = require('../server/routes/routerTopic.js');
 const accessRouter = require('../server/routes/routerAccess.js');
+const postRouter = require('../server/routes/routerPost.js');
+const titleHistoryRouter = require('../server/routes/routerTitleHistory.js');
+const editHistoryRouter = require('../server/routes/routerEditHistory.js');
+const editUserRouter = require('../server/routes/routerUser.js');
+const editVoteRouter = require('../server/routes/routerVote.js');
 
 
 const app = express();
@@ -27,7 +32,7 @@ const runner = require('./runTests.js');
 app.use(logger('dev'));
 
 //sequelize setup
-const { sequelize, Topics, Posts, Users, Accesses } = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
+const { sequelize, Topics, Posts, Users, Accesses, EditHistories, TitleHistories } = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
 
 //cors setup for communication with front-end
 app.use(function(req, res, next){
@@ -43,6 +48,7 @@ app.use(function(req, res, next){
     }
 }) 
 
+
 //allows client communication
 app.use(cors({origin:"http://localhost:3000"})); //can be changed based on env variable
 
@@ -50,6 +56,8 @@ app.use(cors({origin:"http://localhost:3000"})); //can be changed based on env v
 // Set up body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+
 
 // Set up cookie parser middleware
 app.use(cookieParser());
@@ -59,6 +67,22 @@ app.use('/api', topicsRouter);
 
 // Mount the access router
 app.use('/api', accessRouter);
+
+// Mount the Posts router
+app.use('/api', postRouter);
+
+// Mount the TitleHistoy router
+app.use('/api',  titleHistoryRouter);
+
+// Mount the EditHistoy router
+app.use('/api',  editHistoryRouter);
+
+// Mount the User router
+app.use('/api',  editUserRouter);
+
+// Mount the Vote router
+app.use('/api',  editVoteRouter);
+
 
 //session setup
 const sessionStore = new sequelizeStore({

@@ -1,7 +1,5 @@
-//Includes routes related to authentication that were formerly in the "paistaApp" directory
-//routes will be implemented under /api/ in serverj.js
 const bcrypt = require('bcrypt');
-const { User } = require('../dataAccessLayer/sequelize');
+const { Users } = require('../dataAccessLayer/sequelize');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
@@ -18,7 +16,7 @@ module.exports = function(app){
     passport.deserializeUser(async (id,done) => {
         console.log("deserializing user: ", id);
         try{
-            const user = await User.findByPk(id._id);
+            const user = await Users.findByPk(id._id);
             done(null,user);
         }catch(err){
             console.log("Error deserializing");
@@ -30,7 +28,7 @@ module.exports = function(app){
         async (username, password, done) => {
             console.log("using local strat");
             try{
-                const user = await User.findOne({
+                const user = await Users.findOne({
                     where:{
                         username:username
                     }
@@ -65,7 +63,7 @@ module.exports = function(app){
             const hashedPassword = await bcrypt.hash(password, 10);
       
             // Create a new user using Sequelize model methods with hashed password
-            const newUser = await User.create({
+            const newUser = await Users.create({
                 username,
                 hashedPassword: hashedPassword,
                 email,
