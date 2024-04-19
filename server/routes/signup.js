@@ -55,10 +55,7 @@ module.exports = function(app){
         try {
             // Extract form data from request body
             const { username, password, email, firstName, lastName } = req.body;
-      
-            // Log the value of hashedPassword
-            console.log('Password:', password);
-      
+
             // Hash the password
             const hashedPassword = await bcrypt.hash(password, 10);
       
