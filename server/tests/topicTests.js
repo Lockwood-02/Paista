@@ -54,8 +54,7 @@ suite('Topic router tests', function(){
     })
 
     test('Create a valid topic', function(done){
-        let testTopic = { title:"CS560", description:"Software Engineering", userID:testUser.id }
-        assert.deepEqual(testTopic, testTopics[1]);
+        let testTopic = testTopics[1]
         chai.request(server)
         .post('/api/topics')
         .send(testTopic)
@@ -69,6 +68,9 @@ suite('Topic router tests', function(){
                     title:testTopic.title
                 }
             })
+
+            //used in the get by id test
+            testTopics[1].id = dbTopic.id
 
             assert.isNotNull(dbTopic);
             assert.equal(dbTopic.description, testTopic.description);
@@ -117,9 +119,17 @@ suite('Topic router tests', function(){
         chai.request(server)
         .get('/api/topics')
         .end(function(err,res){
-            console.log("GET BODIED! ", res.body)
             chai.assert.deepInclude(res.body[0],testTopics[0]);
             chai.assert.deepInclude(res.body[1],testTopics[1]);
+            done();
+        })
+    })
+
+    test('Get Topic by id', function(done){
+        chai.request(server)
+        .get('/api/topics/'+testTopics[1].id)
+        .end(function(err, res){
+            chai.assert.deepInclude(res.body,testTopics[1]);
             done();
         })
     })
