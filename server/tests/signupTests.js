@@ -229,7 +229,6 @@ suite('User Signup Unit Tests', function() {
                 firstName,
                 lastName
             });
-            console.log("created user for login suite: ", newUser);
             idToDestroy = newUser.id;
         })
 
