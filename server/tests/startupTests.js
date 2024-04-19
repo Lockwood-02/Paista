@@ -32,21 +32,35 @@ let testTopics = [
 
 let testUsers = [
     {
-        username: "andrew",
-        password: 'abc123',
+        username: "andrew",//0
+        password: 'P@ssw0rd',
         email: 'andrew@ky.gov',
         firstName:'Andrew',
         lastName:'Toussaint'
     },
     {
-        username: 'moise',
+        username: "andrew",//1
+        password: 'P@ssw0rd',
+        email: 'andrew2@ky.gov',
+        firstName:'Andrew',
+        lastName:'Toussaint'
+    },
+    {
+        username: "mr_T",//2
+        password: 'P@ssw0rd',
+        email: 'andrew@ky.gov',
+        firstName:'Andrew',
+        lastName:'Toussaint'
+    },
+    {
+        username: 'mo!se',//3
         password: 'aX409sYn#',
         email: 'moise@hotmail.com',
         firstName: 'Moise',
         lastName: 'Kayuni'
     },
     {
-        username: 'isaac',
+        username: 'isaac',//4
         password: 'password',
         email: 'isaac@gmail.com',
         firstName: 'Isaac',
@@ -58,7 +72,6 @@ let idToDestroy = null;
 
 suite('Unit Tests', function() {
     suite('signup.js', function() {
-
         test('Signup valid user', function(done){
             let user = testUsers[0];
             chai.request(server)
@@ -88,11 +101,23 @@ suite('Unit Tests', function() {
             })
         })
 
+        test('Singup an existing user', function(done){
+            let user = testUsers[1]
+            chai.request(server)
+            .post('/api/signup')
+            .send(user)
+            .end(function(err,res){
+                assert.equal(res.status, 200);
+                assert.deepEqual({error:'username is taken'}, res.body);
+                done();
+            });
+        })
+
         //teardown signup.js
         suiteTeardown(function(){
             Users.destroy({
                 where:{
-                    id:idToDestroy
+                    username:testUsers[0].username
                 }
             })
         })

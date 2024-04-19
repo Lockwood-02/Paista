@@ -57,26 +57,26 @@ module.exports = function(app){
         try {
             // Extract form data from request body
             const { username, password, email, firstName, lastName } = req.body;
-
-            if(!signupIsValid(req.body)){
+            const validSignup = await signupIsValid(req.body)
+            if(validSignup.error){
                 console.log("Could not create user: ", username);
-                res.json({error: "could not signup new user"});
+                res.json(validSignup);
+            }else{
+                // Hash the password
+                const hashedPassword = await bcrypt.hash(password, 10);
+        
+                // Create a new user using Sequelize model methods with hashed password
+                const newUser = await Users.create({
+                    username,
+                    hashedPassword: hashedPassword,
+                    email,
+                    firstName,
+                    lastName
+                });
+        
+                console.log("Created user: ", username);
+                res.json(newUser);
             }
-
-            // Hash the password
-            const hashedPassword = await bcrypt.hash(password, 10);
-      
-            // Create a new user using Sequelize model methods with hashed password
-            const newUser = await Users.create({
-                username,
-                hashedPassword: hashedPassword,
-                email,
-                firstName,
-                lastName
-            });
-    
-            console.log("Created user: ", username);
-            res.json(newUser);
         } catch (error) {
             // Handle error (e.g., display error message)
             console.error(error);

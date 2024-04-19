@@ -1,33 +1,33 @@
 const bcrypt = require('bcrypt');
 const { Users } = require('../dataAccessLayer/sequelize');
 
-function signupIsValid(data){
+async function signupIsValid(data){
     //check that the username does not already exist
-    const existingName = Users.findOne({
+    const existingName = await Users.findOne({
         where:{
             username:data.username
         }
     })
     if(existingName){
-        console.log("Username already exists");
-        return false;
+        console.log("Username already exists: ", existingName.username);
+        return {error:'username is taken'};
     }
     //check email does not exist
-    const existingEmail = Users.findOne({
+    const existingEmail = await Users.findOne({
         where:{
             email:data.email
         }
     })
     if(existingEmail){
-        console.log("email already exists");
-        return false;
+        console.log("email already exists: ", existingEmail.email);
+        return {error:'email address is taken'};
     }
     //check the password strength
     if(!passwordIsStrong(data.password)){
-        console.log("weak password");
-        return false;
+        console.log("weak password!");
+        return {error: 'Password must be at least 8 characters including a number, upper letter, lower case letter, and at least one special character: !@#$%^&*()'};
     }
-    return true;
+    return {};
 }
 
 function passwordIsStrong(password){
@@ -52,4 +52,4 @@ function passwordIsStrong(password){
 }
 
 
-module.exports = signupValidate;
+module.exports = signupIsValid;
