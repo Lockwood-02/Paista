@@ -71,7 +71,7 @@ suite('Topic router tests', function(){
             assert.equal(res.status, 201);
             assert.deepInclude(res.body, testTopic);
             
-            dbTopic = await Topics.findOne({
+            let dbTopic = await Topics.findOne({
                 where:{
                     title:testTopic.title
                 }
@@ -177,6 +177,30 @@ suite('Topic router tests', function(){
         chai.request(server)
         .put('/api/topics/a')
         .send({description: testTopics[3].description})
+        .end(function(err, res){
+            assert.equal(res.status, 404);
+            done();
+        })
+    })
+
+    test('delete topic', function(done){
+        console.log("requesting delete topic id: ", testTopics[1].id);
+        console.log("DELETE " + '/api/topics/'+testTopics[1].id);
+        chai.request(server)
+        .delete('/api/topics/' + testTopics[1].id)
+        .end(async function(err, res){
+            assert.equal(res.status, 204);
+            console.log("made it here, not sure");
+            let dbTopic = await Topics.findByPk(testTopics[1].id)
+
+            assert.isNull(dbTopic);
+            done();
+        })
+    })
+
+    test('delete nonexistant topic', function(done){
+        chai.request(server)
+        .delete('/api/topics/a')
         .end(function(err, res){
             assert.equal(res.status, 404);
             done();
