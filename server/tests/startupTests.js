@@ -65,6 +65,13 @@ let testUsers = [
         email: 'isaac@gmail.com',
         firstName: 'Isaac',
         lastName: 'Lockwood'
+    },
+    {
+        username: 'i',//5
+        password: 'password',
+        email: 'isaac@gmail.com',
+        firstName: 'Isaac',
+        lastName: 'Lockwood'
     }
 ]
 
@@ -113,11 +120,50 @@ suite('Unit Tests', function() {
             });
         })
 
+        test('Signup a user with invalid username', function(done){
+            let user = testUsers[3];
+            chai.request(server)
+            .post('/api/signup')
+            .send(user)
+            .end(async function(err,res){
+                assert.equal(res.status, 200);
+                assert.deepEqual({error:"username uses invalid characters"}, res.body);
+
+                //ensure no username in the database
+                dbUser = await Users.findOne({
+                    where:{
+                        username:user.username
+                    }
+                })
+                assert.isNull(dbUser);
+
+                done();
+            })
+        })
+
+        test('Signup a user with a short username', function(done){
+            let user = testUsers[5];
+            chai.request(server)
+            .post('/api/signup')
+            .send(user)
+            .end(async function(err,res){
+                assert.equal(res.status, 200);
+                assert.deepEqual({error: "username is too short"}, res.body);
+                dbUser = await Users.findOne({
+                    where:{
+                        username:user.username
+                    }
+                })
+                assert.isNull(dbUser);
+                done();
+            })
+        })
+
         //teardown signup.js
         suiteTeardown(function(){
             Users.destroy({
                 where:{
-                    username:testUsers[0].username
+                    id: idToDestroy
                 }
             })
         })

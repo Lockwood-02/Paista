@@ -2,6 +2,14 @@ const bcrypt = require('bcrypt');
 const { Users } = require('../dataAccessLayer/sequelize');
 
 async function signupIsValid(data){
+    if(data.username.length < 5){
+        console.log("Username is too short");
+        return {error: "username is too short"}
+    }
+
+    if(!/^[a-zA-Z0-9_-]+$/.test(data.username)){
+        return {error:"username uses invalid characters"}
+    }
     //check that the username does not already exist
     const existingName = await Users.findOne({
         where:{
