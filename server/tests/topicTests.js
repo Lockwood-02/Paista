@@ -21,12 +21,20 @@ let testUser = {
 
 let testTopics = [
     {
-        title:"CS445G",
+        title:"CS445G", //0
         description:"Operating Systems - Graduate",
     },
     {
-        title:"CS560",
+        title:"CS560", //1
         description:"Software Engineering", 
+    },
+    {
+        title:"CS560: Software Engineering",//2
+        description:"Software Engineering", 
+    },
+    {
+        title:"CS560: Software Engineering",//3
+        description:"with Dr.Xing!", 
     }
 ]
 
@@ -119,8 +127,8 @@ suite('Topic router tests', function(){
         chai.request(server)
         .get('/api/topics')
         .end(function(err,res){
-            chai.assert.deepInclude(res.body[0],testTopics[0]);
-            chai.assert.deepInclude(res.body[1],testTopics[1]);
+            assert.deepInclude(res.body[0],testTopics[0]);
+            assert.deepInclude(res.body[1],testTopics[1]);
             done();
         })
     })
@@ -129,7 +137,48 @@ suite('Topic router tests', function(){
         chai.request(server)
         .get('/api/topics/'+testTopics[1].id)
         .end(function(err, res){
-            chai.assert.deepInclude(res.body,testTopics[1]);
+            assert.deepInclude(res.body,testTopics[1]);
+            done();
+        })
+    })
+
+    test('Get Topic by nonexistant id', function(done){
+        chai.request(server)
+        .get('/api/topics/a')
+        .end(function(err, res){
+            assert.equal(res.status, 404);
+            done();
+        })
+    })
+
+    test('Update topic title', function(done){
+        chai.request(server)
+        .put('/api/topics/'+testTopics[1].id)
+        .send({title: testTopics[2].title})
+        .end(function(err,res){
+            assert.equal(res.status, 200);
+            assert.deepInclude(res.body, testTopics[2]);
+            done();
+        })
+    })
+
+    test('Update topic description', function(done){
+        chai.request(server)
+        .put('/api/topics/'+testTopics[1].id)
+        .send({description: testTopics[3].description})
+        .end(function(err,res){
+            assert.equal(res.status, 200);
+            assert.deepInclude(res.body, testTopics[3]);
+            done();
+        })
+    })
+
+    test('Update nonexistant topic', function(done){
+        chai.request(server)
+        .put('/api/topics/a')
+        .send({description: testTopics[3].description})
+        .end(function(err, res){
+            assert.equal(res.status, 404);
             done();
         })
     })
@@ -145,12 +194,7 @@ suite('Topic router tests', function(){
 
         Topics.destroy({
             where:{
-                title:"CS560"
-            }
-        })
-        Topics.destroy({
-            where:{
-                title:"CS445G"
+                title: (testTopics.map(x => x.title))
             }
         })
     })
