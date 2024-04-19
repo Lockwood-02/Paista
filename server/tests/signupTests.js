@@ -8,28 +8,9 @@ const Browser = require('zombie');
 Browser.site = 'http://localhost:3000';
 
 //import sequelize functionality to add test data directly
-const { Topics, Accesses, Users } = require('../dataAccessLayer/sequelize.js');
+const { Users } = require('../dataAccessLayer/sequelize.js');
 
 chai.use(chaiHttp);
-
-let testTopics = [
-    {
-        title:'CS 560: Software engineering',
-        description: 'SE'
-    },
-    {
-        title:'CS 445G: Operating Systems',
-        description: 'by Qi Li'
-    },
-    {
-        title: 'CS 555 Data Science',
-        description: 'formerly AI'
-    },
-    {
-        title: 'CS 570 Security',
-        description: 'idk'
-    }];
-
 
 let testUsers = [
     {

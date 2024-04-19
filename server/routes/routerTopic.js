@@ -16,8 +16,8 @@ router.get('/topics', async (req, res) => {
 // POST create a new topic
 router.post('/topics', async (req, res) => {
   try {
-    const { title, description, UserID } = req.body;
-    const newTopic = await Topics.create({ title, description, UserID });
+    const { title, description, userID } = req.body;
+    const newTopic = await Topics.create({ title, description, userID });
     res.status(201).json(newTopic);
   } catch (error) {
     console.error('Error creating topic:', error);
