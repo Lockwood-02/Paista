@@ -1,5 +1,2 @@
-.env
-server/database.sqlite
-server/database.sqlite
-server/database.sqlite
-server/database.sqlite
+./server/.env
+./server/database.sqlite
