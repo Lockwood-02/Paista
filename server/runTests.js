@@ -2,11 +2,11 @@ const Mocha = require('mocha');
 const mocha = new Mocha();
 
 const EventEmitter = require('events').EventEmitter;
+const fs = require('fs');
 
 const testDir = './tests';
-const testFiles = ['test.js'] //add .js test file names as strings to here in order to run them
 
-testFiles.forEach(file => {
+fs.readdirSync(testDir).forEach(file => {
     mocha.addFile(testDir + "/" + file);
 });
 
