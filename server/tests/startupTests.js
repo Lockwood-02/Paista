@@ -234,14 +234,43 @@ suite('Unit Tests', function() {
         })
 
         test('login a valid user', function(done){
-            let credientials = {username: testUsers[1].username, password: testUsers[1].password}
+            let credentials = {username: testUsers[1].username, password: testUsers[1].password}
 
             chai.request(server)
             .post('/api/login')
-            .send(credientials)
-            .end(function(err,res){
+            .send(credentials)
+            .end(async function(err,res){
                 assert.equal(res.status, 200);
+
+                dbUser = await Users.findOne({
+                    where:{
+                        username: testUsers[1].username
+                    }
+                })
+
+                idToDestroy = dbUser.id;
+
+                done();
             });
+        })
+
+        test('login with wrong password', function(done){
+            let credentials = {username: testUsers[1].username, password: "invalid"}
+            chai.request(server)
+            .post('/api/login')
+            .send(credentials)
+            .end(function(err,res){
+                assert.equal(res.status, 401);
+                done();
+            });
+        })
+
+        suiteTeardown(async function(){
+            Users.destroy({
+                where:{
+                    id: idToDestroy
+                }
+            })
         })
     })
 })
