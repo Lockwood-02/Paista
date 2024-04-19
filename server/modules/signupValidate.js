@@ -10,6 +10,11 @@ async function signupIsValid(data){
     if(!/^[a-zA-Z0-9_-]+$/.test(data.username)){
         return {error:"username uses invalid characters"}
     }
+
+    if(!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email)){
+        return {error: "email address is invalid"}
+    }
+    
     //check that the username does not already exist
     const existingName = await Users.findOne({
         where:{

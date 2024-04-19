@@ -72,6 +72,13 @@ let testUsers = [
         email: 'isaac@gmail.com',
         firstName: 'Isaac',
         lastName: 'Lockwood'
+    },
+    {
+        username: "email_goon",//6
+        password: 'P@ssw0rd',
+        email: 'ky.gov',
+        firstName:'Andrew',
+        lastName:'Toussaint'
     }
 ]
 
@@ -167,6 +174,30 @@ suite('Unit Tests', function() {
                     }
                 })
                 assert.isNull(dbUser);
+                done();
+            })
+        })
+
+        test('Signup a user with a weak password', function(done){
+            let user = testUsers[4];
+            chai.request(server)
+            .post('/api/signup')
+            .send(user)
+            .end(function(err,res){
+                assert.equal(res.status, 200);
+                assert.deepEqual({error: 'Password must be at least 8 characters including a number, upper letter, lower case letter, and at least one special character: !@#$%^&*()'}, res.body);
+                done();
+            })
+        })
+
+        test('Signup a user with a invalid email address', function(done){
+            let user = testUsers[6];
+            chai.request(server)
+            .post('/api/signup')
+            .send(user)
+            .end(function(err,res){
+                assert.equal(res.status, 200);
+                assert.deepEqual({error: "email address is invalid"}, res.body);
                 done();
             })
         })
