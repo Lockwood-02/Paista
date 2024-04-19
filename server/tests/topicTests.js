@@ -117,9 +117,9 @@ suite('Topic router tests', function(){
         chai.request(server)
         .get('/api/topics')
         .end(function(err,res){
-
-
-
+            console.log("GET BODIED! ", res.body)
+            chai.assert.deepInclude(res.body[0],testTopics[0]);
+            chai.assert.deepInclude(res.body[1],testTopics[1]);
             done();
         })
     })
@@ -136,6 +136,11 @@ suite('Topic router tests', function(){
         Topics.destroy({
             where:{
                 title:"CS560"
+            }
+        })
+        Topics.destroy({
+            where:{
+                title:"CS445G"
             }
         })
     })
