@@ -19,6 +19,17 @@ let testUser = {
     lastName:'Toussaint'
 }
 
+let testTopics = [
+    {
+        title:"CS445G",
+        description:"Operating Systems - Graduate",
+    },
+    {
+        title:"CS560",
+        description:"Software Engineering", 
+    }
+]
+
 suite('Topic router tests', function(){
 
     suiteSetup(async function(){
@@ -36,10 +47,15 @@ suite('Topic router tests', function(){
                 lastName
             });
             testUser.id = newUser.id;
+            testTopics[0].userID = testUser.id;
+            testTopics[1].userID = testUser.id;
+            //add a topic just to pad the GET request
+            await Topics.create(testTopics[0]);
     })
 
     test('Create a valid topic', function(done){
         let testTopic = { title:"CS560", description:"Software Engineering", userID:testUser.id }
+        assert.deepEqual(testTopic, testTopics[1]);
         chai.request(server)
         .post('/api/topics')
         .send(testTopic)
@@ -87,12 +103,23 @@ suite('Topic router tests', function(){
     })
 
     test('Create a topic with a name that already exists', function(done){
-        let testTopic = { title:"CS560", description:"Software Engineering", userID:testUser.id }
+        let testTopic = testTopics[1]
         chai.request(server)
         .post('/api/topics')
         .send(testTopic)
         .end(async function(err,res){
             assert.deepEqual({error:"topic name is already in use"}, res.body);
+            done();
+        })
+    })
+
+    test('Get existing topics', function(done){
+        chai.request(server)
+        .get('/api/topics')
+        .end(function(err,res){
+
+
+
             done();
         })
     })
