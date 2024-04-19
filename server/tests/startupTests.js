@@ -46,7 +46,7 @@ let testUsers = [
         lastName:'Toussaint'
     },
     {
-        username: "mr_T",//2
+        username: "andrew2",//2
         password: 'P@ssw0rd',
         email: 'andrew@ky.gov',
         firstName:'Andrew',
@@ -116,6 +116,18 @@ suite('Unit Tests', function() {
             .end(function(err,res){
                 assert.equal(res.status, 200);
                 assert.deepEqual({error:'username is taken'}, res.body);
+                done();
+            });
+        })
+
+        test('Singup an existing email', function(done){
+            let user = testUsers[2]
+            chai.request(server)
+            .post('/api/signup')
+            .send(user)
+            .end(function(err,res){
+                assert.equal(res.status, 200);
+                assert.deepEqual({error:'email address is taken'}, res.body);
                 done();
             });
         })
