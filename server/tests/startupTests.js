@@ -54,24 +54,45 @@ let testUsers = [
     }
 ]
 
-suite('Startup Tests', function() {
-    suite('Unit Tests', function() {
-        suite('signup.js', function() {
-            test('Signup valid user', function(done){
-                let user = testUsers[0];
-                chai.request(server)
-                .post('/api/signup')
-                .send(user)
-                .end( async function(err,res){
-                    //response recieved
-                    assert.equal(res.status, 200);
-                    //response data is as expected
-                    assert.equal(res.data.username, user.username);
-                    
-                    done();
-                })
+suite('Unit Tests', function() {
+    suite('signup.js', function() {
+        test('Signup valid user', function(done){
+            let user = testUsers[0];
+            chai.request(server)
+            .post('/api/signup')
+            .send(user)
+            .end(async function(err,res){
+                //response recieved
+                assert.equal(res.status, 200);
+                //response data is as expected
+                assert.equal(res.body.username, user.username);
+                assert.notEqual(res.body.password, user.password);//must be hashed!
+                assert.equal(res.body.email, user.email);
+                assert.equal(res.body.firstName, user.firstName);
+                assert.equal(res.body.lastName, user.lastName);
+
+                //check the database is correctly updated
+                dbUser = await Users.findByPk(res.body.id);
+                assert.equal(dbUser.username, user.username);
+                assert.notEqual(dbUser.password, user.password);//must be hashed!
+                assert.equal(dbUser.email, user.email);
+                assert.equal(dbUser.firstName, user.firstName);
+                assert.equal(dbUser.lastName, user.lastName);
+
+                done();
             })
         })
+
+        //teardown signup.js
+        suiteTeardown(function(){
+            Users.destroy({
+                where:{
+                    email:testUsers[0].email
+                }
+            })
+        })
+
     })
-    //functional tests
 })
+
+
