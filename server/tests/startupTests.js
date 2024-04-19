@@ -54,8 +54,11 @@ let testUsers = [
     }
 ]
 
+let idToDestroy = null;
+
 suite('Unit Tests', function() {
     suite('signup.js', function() {
+
         test('Signup valid user', function(done){
             let user = testUsers[0];
             chai.request(server)
@@ -73,6 +76,8 @@ suite('Unit Tests', function() {
 
                 //check the database is correctly updated
                 dbUser = await Users.findByPk(res.body.id);
+                idToDestroy = res.body.id;
+
                 assert.equal(dbUser.username, user.username);
                 assert.notEqual(dbUser.password, user.password);//must be hashed!
                 assert.equal(dbUser.email, user.email);
@@ -87,7 +92,7 @@ suite('Unit Tests', function() {
         suiteTeardown(function(){
             Users.destroy({
                 where:{
-                    email:testUsers[0].email
+                    id:idToDestroy
                 }
             })
         })
