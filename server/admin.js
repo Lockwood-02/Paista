@@ -7,7 +7,7 @@ module.exports = async function() {
     try {
         adminExists = await Users.findOne({
             where: {
-                class:2
+                userClass:2
             }
         })     
     }catch(err){
@@ -51,7 +51,7 @@ module.exports = async function() {
                         const admin = await Users.create({
                             username: username,
                             hashedPassword: hashedPassword,
-                            class: 2,
+                            userClass: 2,
                             banned: false,
                             email:'test@gmail.com',
                         });
@@ -70,9 +70,6 @@ module.exports = async function() {
         rl.close();
 
           
-    }else{
-        console.log("Admin account already exists. Server is running...");
     }
-
     return;
 }
