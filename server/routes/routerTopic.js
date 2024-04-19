@@ -17,8 +17,20 @@ router.get('/topics', async (req, res) => {
 router.post('/topics', async (req, res) => {
   try {
     const { title, description, userID } = req.body;
-    const newTopic = await Topics.create({ title, description, userID });
-    res.status(201).json(newTopic);
+
+    const topicExists = await Topics.findOne({
+      where:{
+        title: title
+      }
+    })
+
+    if(topicExists){
+      res.json({error:"topic name is already in use"})
+    }else{
+      const newTopic = await Topics.create({ title, description, userID });
+      res.status(201).json(newTopic);
+    }
+    
   } catch (error) {
     console.error('Error creating topic:', error);
     res.status(500).json({ error: 'Internal Server Error' });

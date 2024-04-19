@@ -86,6 +86,17 @@ suite('Topic router tests', function(){
         })
     })
 
+    test('Create a topic with a name that already exists', function(done){
+        let testTopic = { title:"CS560", description:"Software Engineering", userID:testUser.id }
+        chai.request(server)
+        .post('/api/topics')
+        .send(testTopic)
+        .end(async function(err,res){
+            assert.deepEqual({error:"topic name is already in use"}, res.body);
+            done();
+        })
+    })
+
 
     suiteTeardown(async function(){
         //remove the test user

@@ -44,6 +44,7 @@ const Topics = sequelize.define('Topics', {
     title: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: {
             len: [1, 255] // Ensure title length is between 1 and 255 characters
         }
