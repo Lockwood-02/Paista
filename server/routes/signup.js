@@ -3,6 +3,8 @@ const { Users } = require('../dataAccessLayer/sequelize');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
+const signupIsValid = require('../modules/signupValidate');
+
 module.exports = function(app){
     app.use(passport.initialize());
     app.use(passport.session());
@@ -55,6 +57,11 @@ module.exports = function(app){
         try {
             // Extract form data from request body
             const { username, password, email, firstName, lastName } = req.body;
+
+            if(!signupIsValid(req.body)){
+                console.log("Could not create user: ", username);
+                res.json({error: "could not signup new user"});
+            }
 
             // Hash the password
             const hashedPassword = await bcrypt.hash(password, 10);
