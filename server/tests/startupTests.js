@@ -265,6 +265,17 @@ suite('Unit Tests', function() {
             });
         })
 
+        test('login with nonexistant username', function(done){
+            let credentials = {username: "nonexistantusername", password: "P@ssw0rd"}
+            chai.request(server)
+            .post('/api/login')
+            .send(credentials)
+            .end(function(err,res){
+                assert.equal(res.status, 401);
+                done();
+            });
+        })
+
         suiteTeardown(async function(){
             Users.destroy({
                 where:{

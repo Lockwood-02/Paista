@@ -49,7 +49,8 @@ module.exports = function(app){
                     return done(null,user);
                 }
             }catch(err){
-                done(err);
+                console.log("unable to find user or other error")
+                return done(null, false);
             }
             
         }
