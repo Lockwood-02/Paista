@@ -1,7 +1,7 @@
 const chaiHttp = require('chai-http');
 const chai = require('chai');
 const assert = chai.assert;
-const server = require('../server');
+const server = require('../server.js');
 const bcrypt = require('bcrypt');
 
 const Browser = require('zombie');
@@ -85,7 +85,7 @@ let testUsers = [
 
 let idToDestroy = null;
 
-suite('Unit Tests', function() {
+suite('User Signup Unit Tests', function() {
     suite('signup.js - signup', function() {
         test('Signup valid user', function(done){
             let user = testUsers[0];
