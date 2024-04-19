@@ -2,6 +2,7 @@ const chaiHttp = require('chai-http');
 const chai = require('chai');
 const assert = chai.assert;
 const server = require('../server');
+const bcrypt = require('bcrypt');
 
 const Browser = require('zombie');
 Browser.site = 'http://localhost:3000';
@@ -85,7 +86,7 @@ let testUsers = [
 let idToDestroy = null;
 
 suite('Unit Tests', function() {
-    suite('signup.js', function() {
+    suite('signup.js - signup', function() {
         test('Signup valid user', function(done){
             let user = testUsers[0];
             chai.request(server)
@@ -211,6 +212,37 @@ suite('Unit Tests', function() {
             })
         })
 
+    })
+
+    suite('signup.js - login', function() {
+
+        suiteSetup(async function(){
+            const { username, password, email, firstName, lastName } = testUsers[0]
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+        
+            // Create a new user using Sequelize model methods with hashed password
+            const newUser = await Users.create({
+                username,
+                hashedPassword: hashedPassword,
+                email,
+                firstName,
+                lastName
+            });
+            console.log("created user for login suite: ", newUser);
+            idToDestroy = newUser.id;
+        })
+
+        test('login a valid user', function(done){
+            let credientials = {username: testUsers[1].username, password: testUsers[1].password}
+
+            chai.request(server)
+            .post('/api/login')
+            .send(credientials)
+            .end(function(err,res){
+                assert.equal(res.status, 200);
+            });
+        })
     })
 })
 

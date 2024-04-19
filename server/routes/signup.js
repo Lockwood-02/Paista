@@ -35,10 +35,13 @@ module.exports = function(app){
                         username:username
                     }
                 })
+
+                let passwordCorrect = await bcrypt.compareSync(password, user.hashedPassword)
+
                 if(!user){
                     console.log("Attempted login to nonexistnat user")
                     return done(null, false);//return all data stored in the user object
-                }else if(!bcrypt.compare(user.hashedPassword, password)){
+                }else if(!passwordCorrect){
                     console.log("Attempt to login with wrong password");
                     return done(null, false);//wrong password
                 }else{
