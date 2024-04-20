@@ -1,10 +1,12 @@
-//initialize obj
+require('dotenv').config();
 
+//initialize obj
+let storageStr = process.env.NODE_ENV == 'test' ? 'test.sqlite' : 'database.sqlite';
 // Establish a connection to the database
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: 'database.sqlite'
+    storage: storageStr
 });
 // If using online storage, replace the above with:
 // const sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname');
@@ -42,6 +44,7 @@ const Topics = sequelize.define('Topics', {
     title: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         validate: {
             len: [1, 255] // Ensure title length is between 1 and 255 characters
         }
@@ -271,7 +274,7 @@ Votes.belongsTo(Posts, { foreignKey: 'Post_ID', onDelete: 'CASCADE' });
 // Synchronize Sequelize models with the database
 sequelize.sync({logging:false})
   .then(() => {
-    console.log('Tables synchronized successfully');
+    //console.log('Tables synchronized successfully');
     // Your application logic here
   })
   .catch((error) => {

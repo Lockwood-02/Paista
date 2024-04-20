@@ -3,6 +3,8 @@ const { Users } = require('../dataAccessLayer/sequelize');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
+const signupIsValid = require('../modules/signupValidate');
+
 module.exports = function(app){
     app.use(passport.initialize());
     app.use(passport.session());
@@ -33,10 +35,13 @@ module.exports = function(app){
                         username:username
                     }
                 })
+
+                let passwordCorrect = await bcrypt.compareSync(password, user.hashedPassword)
+
                 if(!user){
                     console.log("Attempted login to nonexistnat user")
                     return done(null, false);//return all data stored in the user object
-                }else if(!bcrypt.compare(user.hashedPassword, password)){
+                }else if(!passwordCorrect){
                     console.log("Attempt to login with wrong password");
                     return done(null, false);//wrong password
                 }else{
@@ -44,7 +49,8 @@ module.exports = function(app){
                     return done(null,user);
                 }
             }catch(err){
-                done(err);
+                console.log("unable to find user or other error")
+                return done(null, false);
             }
             
         }
@@ -55,24 +61,26 @@ module.exports = function(app){
         try {
             // Extract form data from request body
             const { username, password, email, firstName, lastName } = req.body;
-      
-            // Log the value of hashedPassword
-            console.log('Password:', password);
-      
-            // Hash the password
-            const hashedPassword = await bcrypt.hash(password, 10);
-      
-            // Create a new user using Sequelize model methods with hashed password
-            const newUser = await Users.create({
-                username,
-                hashedPassword: hashedPassword,
-                email,
-                firstName,
-                lastName
-            });
-    
-            console.log("Created user: ", username);
-            res.json(newUser);
+            const validSignup = await signupIsValid(req.body)
+            if(validSignup.error){
+                console.log("Could not create user: ", username);
+                res.json(validSignup);
+            }else{
+                // Hash the password
+                const hashedPassword = await bcrypt.hash(password, 10);
+        
+                // Create a new user using Sequelize model methods with hashed password
+                const newUser = await Users.create({
+                    username,
+                    hashedPassword: hashedPassword,
+                    email,
+                    firstName,
+                    lastName
+                });
+        
+                console.log("Created user: ", username);
+                res.json(newUser);
+            }
         } catch (error) {
             // Handle error (e.g., display error message)
             console.error(error);

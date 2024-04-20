@@ -16,9 +16,21 @@ router.get('/topics', async (req, res) => {
 // POST create a new topic
 router.post('/topics', async (req, res) => {
   try {
-    const { title, description, UserID } = req.body;
-    const newTopic = await Topics.create({ title, description, UserID });
-    res.status(201).json(newTopic);
+    const { title, description, userID } = req.body;
+
+    const topicExists = await Topics.findOne({
+      where:{
+        title: title
+      }
+    })
+
+    if(topicExists){
+      res.json({error:"topic name is already in use"})
+    }else{
+      const newTopic = await Topics.create({ title, description, userID });
+      res.status(201).json(newTopic);
+    }
+
   } catch (error) {
     console.error('Error creating topic:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -61,12 +73,18 @@ router.put('/topics/:id', async (req, res) => {
 router.delete('/topics/:id', async (req, res) => {
   try {
     const { id } = req.params;
+    console.log("deleting topic with ID: ", id);
     const topic = await Topics.findByPk(id);
     if (!topic) {
-      return res.status(404).json({ error: 'Topic not found' });
+      res.status(404).json({ error: 'Topic not found' });
+    }else{
+      await Topics.destroy({
+        where:{
+          id:id
+        }
+      });
+      res.status(204).json({success:"Topic destroyed"});
     }
-    await topic.destroy();
-    res.sendStatus(204);
   } catch (error) {
     console.error('Error deleting topic:', error);
     res.status(500).json({ error: 'Internal Server Error' });
