@@ -9,8 +9,8 @@ import Root from './components/Root';
 import SessionTest from './components/SessionTest';
 import Signup from './components/Signup';
 import Login from './components/Login';
-import CreatePost from './components/CreatePost';
-import EditPost from './components/EditPost';
+import CreatePost from './components/Post/CreatePost';
+import EditPost from './components/Post/EditPost';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
