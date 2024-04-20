@@ -100,7 +100,7 @@ sessionStore.sync({ logging: false });
 
 //synchronize to test db setup, developement only
 sequelize.sync({ logging: false }).then(() => {
-    //console.log('Database synced');
+    console.log('Database synced');
 }).catch(err => {
     console.error('Error syncing database:', err);
 });
