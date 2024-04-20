@@ -119,6 +119,19 @@ suite('Access router tests', function(){
         })
     })
 
+    test('Get Access by id', function(done){
+        chai.request(server)
+        .get('/api/accesses/' + accessIds[0])
+        .end(function(err, res){
+            assert.deepInclude(res.body,{
+                Users_ID: testUser.id,
+                Topic_ID: testTopics[0].id,
+                Access_Type:'basic'
+            })
+            done();
+        })
+    })
+
     suiteTeardown(async function(){
 
         await Accesses.destroy({
