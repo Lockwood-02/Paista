@@ -192,6 +192,16 @@ suite('Post router tests', function(){
         })
     })
 
+    test('Get post by id', (done) => {
+        chai.request(server)
+        .get('/api/Posts/' + testPosts[1].ID)
+        .end((err,res) =>{
+            assert.equal(res.status,200);
+            assert.include(res.body, testPosts[1]);
+            done();
+        })
+    })
+
 
     suiteTeardown(async function(){
         await Posts.destroy({
