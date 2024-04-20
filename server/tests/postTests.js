@@ -225,6 +225,42 @@ suite('Post router tests', function(){
         })
     })
 
+    test('Update to nonexistant type', (done) => {
+        let badPost = { ...testPosts[1] };
+        badPost.Type = "noType";
+        chai.request(server)
+        .put('/api/Posts/' + testPosts[1].ID)
+        .send(badPost)
+        .end(async (err,res) =>{
+            assert.equal(res.status,500);
+            assert.deepEqual(res.body, {error: "attempted to create post with invalid type"});
+            dbPost = await Posts.findByPk(testPosts[1].ID);
+            assert.include(dbPost, testPosts[1]);
+            done();
+        })
+    })
+
+    test('Delete Post', (done) => {
+        chai.request(server)
+        .delete('/api/Posts/' + testPosts[1].ID)
+        .end(async (err,res) =>{
+            assert.equal(res.status,204);
+            dbPost = await Posts.findByPk(testPosts[1].ID);
+            assert.isNull(dbPost);
+            done();
+        })
+    })
+
+    test('Delete nonexistant Post', (done) => {
+        chai.request(server)
+        .delete('/api/Posts/' + testPosts[1].ID)
+        .end(async (err,res) =>{
+            assert.equal(res.status,404);
+            assert.deepEqual(res.body, { error: 'Post not found' })
+            done();
+        })
+    })
+
 
     suiteTeardown(async function(){
         await Posts.destroy({

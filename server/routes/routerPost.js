@@ -49,6 +49,9 @@ router.put('/Posts/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { Creator_ID, Thread_ID, Topic_ID, Solution_ID, Title, Body, Deleted, Anonymous, Type } = req.body;
+    if(['Announcement', 'Resolved', 'Unresolved'].indexOf(Type) < 0){
+      return res.status(500).json({error: "attempted to create post with invalid type"});
+    }
     const post = await Posts.findByPk(id);
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
