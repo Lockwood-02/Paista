@@ -29,7 +29,7 @@ let testTopics = [
 
 let testPosts = [
     {
-        Title:'How do I center a div?',
+        Title:'How do I center a div?',//0
         Body: 'does anyone know?',
         Deleted:false,
         Anonymous:true,
@@ -38,14 +38,41 @@ let testPosts = [
         Solution_ID:null
     },
     {
-        Title:'Quiz on Friday',
+        Title:'Quiz on Friday',//1
         Body: 'topic will be node.js testing',
         Deleted:false,
         Anonymous:false,
         Type:'Announcement',
         Thread_ID:null,
         Solution_ID:null
-    }
+    },
+    {
+        Title:'How do I center a div?',//2
+        Body: 'does anyone know?',
+        Deleted:false,
+        Anonymous:true,
+        Type:'nonexistant_type',
+        Thread_ID:null,
+        Solution_ID:null
+    },
+    {
+        Title:'How do I center a div?',//3
+        Body: 'does anyone know?',
+        Deleted:false,
+        Anonymous:true,
+        Type:'nonexistant_type',
+        Thread_ID:null,
+        Solution_ID:null
+    },
+    {
+        Title:'How do I center a div?',//4
+        Body: 'does anyone know?',
+        Deleted:false,
+        Anonymous:true,
+        Type:'nonexistant_type',
+        Thread_ID:null,
+        Solution_ID:null
+    },
 ]
 
 suite('Post router tests', function(){
@@ -78,7 +105,7 @@ suite('Post router tests', function(){
 
         testPosts.forEach((post,i) => {
             post.Creator_ID = newUser.id;
-            post.Topic_ID = testTopics[i].id;
+            post.Topic_ID = i<2 ? testTopics[i].id : testTopics[0].id;
         })
 
         console.log("Created test posts: ", testPosts[0]);
@@ -91,11 +118,48 @@ suite('Post router tests', function(){
         .end(async function(err,res){
             assert.equal(res.status,201);
             assert.include(res.body, testPosts[0]);
-            console.log("post response: ", res.body);
+
             dbPost = await Posts.findByPk(res.body.ID);
-            console.log("db Post: ", dbPost);
+
             assert.include(dbPost, testPosts[0]);
             testPosts[0].ID = dbPost.ID;
+            done();
+        })
+    })
+
+    test('Create post with invalid type', (done) => {
+        chai.request(server)
+        .post('/api/Posts')
+        .send(testPosts[2])
+        .end(function(err,res){
+            assert.equal(res.status,500);
+            assert.deepEqual(res.body, {error: "attempted to create post with invalid type"})
+            done();
+        })
+    })
+
+    test('Create post with null creator id', (done) => {
+
+        testPosts[3].Creator_ID = null;
+
+        chai.request(server)
+        .post('/api/Posts')
+        .send(testPosts[3])
+        .end(function(err,res){
+            assert.equal(res.status,500);
+            done();
+        })
+    })
+
+    test('Create post with null topic id', (done) => {
+
+        testPosts[4].Topic_ID = null;
+
+        chai.request(server)
+        .post('/api/Posts')
+        .send(testPosts[4])
+        .end(function(err,res){
+            assert.equal(res.status,500);
             done();
         })
     })

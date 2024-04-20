@@ -17,8 +17,12 @@ router.get('/Posts', async (req, res) => {
 router.post('/Posts', async (req, res) => {
   try {
     const { Creator_ID, Thread_ID, Topic_ID, Solution_ID, Title, Body, Deleted, Anonymous, Type } = req.body;
-    const newPost = await Posts.create({ Creator_ID, Thread_ID, Topic_ID, Solution_ID, Title, Body, Deleted, Anonymous, Type });
-    res.status(201).json(newPost);
+    if(['Announcement', 'Resolved', 'Unresolved'].indexOf(Type) < 0){
+      res.status(500).json({error: "attempted to create post with invalid type"});
+    }else{
+      const newPost = await Posts.create({ Creator_ID, Thread_ID, Topic_ID, Solution_ID, Title, Body, Deleted, Anonymous, Type });
+      res.status(201).json(newPost);
+    }
   } catch (error) {
     console.error('Error creating post:', error);
     res.status(500).json({ error: 'Internal Server Error' });
