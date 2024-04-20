@@ -176,6 +176,26 @@ suite('Access router tests', function(){
         })
     })
 
+    test('Delete access', function(done){
+        chai.request(server)
+        .delete('/api/accesses/' + accessIds[0])
+        .end(function(err, res){
+            assert.equal(res.status,204);
+            accessIds.pop();
+            done();
+        })
+    })
+
+    test('Delete access that is not found', function(done){
+        chai.request(server)
+        .delete('/api/accesses/a')
+        .end(function(err, res){
+            assert.equal(res.status,404);
+            assert.deepEqual(res.body,{ error: 'Access not found' });
+            done();
+        })
+    })
+
     suiteTeardown(async function(){
 
         await Accesses.destroy({
