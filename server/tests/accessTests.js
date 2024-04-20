@@ -5,7 +5,6 @@ const server = require('../server.js');
 const bcrypt = require('bcrypt');
 
 const { Users, Topics, Accesses } = require('../dataAccessLayer/sequelize.js');
-const { describe } = require('mocha');
 
 chai.use(chaiHttp);
 
@@ -47,7 +46,7 @@ suite('Access router tests', function(){
             });
             testUser.id = newUser.id;
             console.log("Created user: ", newUser);
-            console.log("simulated data in: ", testUser);
+  
             //add a topics
             topic0 = await Topics.create({
                 title: testTopics[0].title,
