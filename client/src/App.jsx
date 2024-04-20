@@ -9,6 +9,7 @@ import Root from './components/Root';
 import SessionTest from './components/SessionTest';
 import Signup from './components/Signup';
 import Login from './components/Login';
+import TopicAdd from './components/TopicAdd';
 
 
 const router = createBrowserRouter(
@@ -23,6 +24,7 @@ const router = createBrowserRouter(
             <Route path='*' element={<Root />} >
               <Route index element={<HomePage />} />
               <Route path='sessionTest' element={<SessionTest />} />
+              <Route path='form' element={<TopicAdd />} />
             </Route>
           </Routes>
       </>
