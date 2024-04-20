@@ -1,27 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import axiosInstance from "../modules/axiosInstance";
+import axiosInstance from "../../modules/axiosInstance";
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
-const CreatePost = () => {
+const EditPost =() => {
     const [user, setUser] = useState({});
+    const [Creator_ID, setCreator_ID] = useState(null);
+    const [Thread_ID, setThread_ID] = useState(null);
+    const [Topic_ID, setTopic_ID] = useState(null);
+    const [Solution_ID, setSolution_ID] = useState(null);
     const [Title, setTitle] = useState('');
     const [Body, setBody] = useState('');
     const [Anonymous, setAnonymous] = useState('Unanonymous');
     const [Type, setType] = useState('Unresolved');
+    const [Deleted, setDeleted] = useState(false)
     const [message, setMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    //get query params to determine topic and thread ids
+    //get query params to determine post id
     const location = useLocation();
     const query = new URLSearchParams(location.search);
 
-    const Thread_ID = query.get('Thread_ID');
-    const Topic_ID = query.get("Topic_ID");
+    const Post_ID = query.get('Post_ID');
 
     //redirect
     const nav = useNavigate();
 
-    useEffect(() => {
+    useEffect( () => {
         const fetchUser = async () => {
             try{
                 const res = await axiosInstance.get("api/getUser");
@@ -32,31 +37,57 @@ const CreatePost = () => {
             }
         };
 
+        const fetchPost = async () => {
+            try{
+                const res = await axiosInstance.get("api/Posts/" + Post_ID);
+                    console.log("Setting post: ", res.data);
+                    if(res.data.error){
+                        console.log("Could not fetch post")
+                    }else{
+                        setCreator_ID(res.data.Creator_ID);
+                        setThread_ID(res.data.Thread_ID);
+                        setTopic_ID(res.data.Topic_ID);
+                        setSolution_ID(res.data.Solution_ID);
+                        setTitle(res.data.Title);
+                        setBody(res.data.Body);
+                        setAnonymous(res.data.Anonymous ? "Anonymous" : "Unanonymous");
+                        setType(res.data.Type);
+                        setDeleted(res.data.Deleted);
+                    }
+            }catch(err){
+                console.error('Error fetching post info: ', err);
+            }
+        };
+
         fetchUser();
+        fetchPost();
+
+        setLoading(false);
+        console.log("Done loading");
+
         return () => {
 
         };
 
     }, []);
 
-    const handleCreatePost = async (e) => {
+    const handleSaveChanges = async (e) => {
         e.preventDefault();
-        //client side validation of form
+        //data validation
         if(['Announcement', 'Resolved', 'Unresolved'].indexOf(Type) < 0){
             setMessage("Error: Invalid post type. Refresh page and try again");
         }else if(!Topic_ID || !user.id){
-
-            setMessage("Error: Could not post. Refresh page and try again");
+            setMessage("Error: Could not update. Refresh page and try again");
         }else{
             try{
-                const res = await axiosInstance.post("api/Posts", {
+                const res = await axiosInstance.put("api/Posts/" + Post_ID, {
                     Creator_ID:user.id,
                     Thread_ID:Thread_ID,
                     Topic_ID:Topic_ID,
-                    Solution_ID:null,
+                    Solution_ID:Solution_ID,
                     Title:Title,
                     Body:Body,
-                    Deleted:false,
+                    Deleted:Deleted,
                     Anonymous: (Anonymous == "Anonymous"),
                     Type:Type
                 });
@@ -67,7 +98,6 @@ const CreatePost = () => {
                 setMessage("Error: Could not post. Refresh page and try again");
             }
         }
-
     }
 
     const handleAnonymousChange = (e) => {
@@ -78,20 +108,26 @@ const CreatePost = () => {
         setType(e.target.value);
     }
 
-    if(!Topic_ID){
+    if(loading){
         return (
             <div>
-                Invalid post location. Please try creating a post from a topic.
+                Loading...
+            </div>
+        )
+    }else if(user.id !== Creator_ID){
+        return (
+            <div>
+                You do not have permission to edit this post
             </div>
         )
     }else{
         return (
             <div>
                 <div className="mb-4">
-                    <h1 className="text-4xl font-medium font-header">CreatePost</h1>
+                    <h1 className="text-4xl font-medium font-header">Edit Post</h1>
                     <div>
                         <div className="bg-white p-4 mb-4 rounded shadow">
-                            <form onSubmit={handleCreatePost} className="space-y-4">
+                            <form onSubmit={handleSaveChanges} className="space-y-4">
                                 <div>
                                     <label htmlFor="Title" className="block">
                                         <h2 className="text-xl font-bold mb-2">Title</h2>
@@ -106,7 +142,6 @@ const CreatePost = () => {
                                         />
                                     </label>
                                 </div>
-
                                 <div>
                                     <label htmlFor="Body" className="block">
                                         <h2 className="text-xl font-bold mb-2">Body</h2>
@@ -175,13 +210,12 @@ const CreatePost = () => {
                                     type="submit"
                                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                                 >
-                                    Create
+                                    Save Changes
                                 </button>
 
                                 <div>
                                     <p>{message}</p>
                                 </div>
-
                             </form>
                         </div>
                     </div>
@@ -191,4 +225,4 @@ const CreatePost = () => {
     }
 }
 
-export default CreatePost;
+export default EditPost
