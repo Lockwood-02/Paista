@@ -202,6 +202,29 @@ suite('Post router tests', function(){
         })
     })
 
+    test('Update title', (done) => {
+        testPosts[1].Title = "Edit: Quiz on Thursday!"
+        chai.request(server)
+        .put('/api/Posts/' + testPosts[1].ID)
+        .send(testPosts[1])
+        .end((err,res) =>{
+            assert.equal(res.status,200);
+            assert.include(res.body, testPosts[1]);
+            done();
+        })
+    })
+
+    test('Update nonexistant post', (done) => {
+        chai.request(server)
+        .put('/api/Posts/' + 'a')
+        .send(testPosts[1])
+        .end((err,res) =>{
+            assert.equal(res.status,404);
+            assert.deepEqual(res.body,{ error: 'Post not found' })
+            done();
+        })
+    })
+
 
     suiteTeardown(async function(){
         await Posts.destroy({
