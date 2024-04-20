@@ -51,7 +51,21 @@ const ViewPost = () => {
         const formattedDate = `${hours}:${minutes} ${month}/${day}/${year}`;
         
         return formattedDate;
-      }
+    }
+
+    const fetchComments = async () => {
+        try{
+            const res = await axiosInstance.get("api/getThread/" + Post_ID);
+            console.log("comments data: ", res.data);
+            if(!res.data.error){
+                setComments(res.data);
+            }else{
+                console.error("Error fetching comments: ", res.data.error)
+            }
+        }catch(err){
+            console.error('Error fetching user info: ', err);
+        }
+    }
 
     useEffect( () => {
         const fetchUser = async () => {
@@ -93,20 +107,6 @@ const ViewPost = () => {
                 console.error('Error fetching post info: ', err);
             }
         };
-
-        const fetchComments = async () => {
-            try{
-                const res = await axiosInstance.get("api/getThread/" + Post_ID);
-                console.log("comments data: ", res.data);
-                if(!res.data.error){
-                    setComments(res.data);
-                }else{
-                    console.error("Error fetching comments: ", res.data.error)
-                }
-            }catch(err){
-                console.error('Error fetching user info: ', err);
-            }
-        }
 
         fetchUser();
         fetchPost();
@@ -178,7 +178,7 @@ const ViewPost = () => {
             //if the user has voted
             if(voteData.data.id){
                 const res = await axiosInstance.delete("/api/votes/" + voteData.data.id)
-                if(res.status == 204){
+                if(res.status === 204){
                     console.log("Vote withdrawn")
                     setVote(false);
                 }
@@ -187,7 +187,7 @@ const ViewPost = () => {
                     User_ID: user.id,
                     Post_ID: Post_ID
                 })
-                if(res.status == 201){
+                if(res.status === 201){
                     console.log("vote cast")
                     setVote(true)
                 }
@@ -215,6 +215,7 @@ const ViewPost = () => {
             console.log("Axios response: ", res);//debugging
             setComAnon("Unanonymous");
             setComBody('');
+            fetchComments();
         }catch(err){
             console.error("Error posting comment", err);
         }
@@ -235,7 +236,7 @@ const ViewPost = () => {
             <div>
                 <div className='mb-4'>
                     <h1 className="text-4xl font-medium font-header">{Title}</h1>
-                    <p>{Type} {Type != "Announcement" ? "Question" : ""} By: {Anonymous === "Anonymous" ? "Anonymous" : creatorUsername}</p>
+                    <p>{Type} {Type !== "Announcement" ? "Question" : ""} By: {Anonymous === "Anonymous" ? "Anonymous" : creatorUsername}</p>
                     <p>Created on: {createdAt}</p>
                     <p>Last Updated: {updatedAt}</p>
                     <button
@@ -297,6 +298,16 @@ const ViewPost = () => {
                         Comment
                         </button>
                     </form>
+                    <h2 className="text-xl font-bold mb-2">Comments</h2>
+                    {
+                        //TODO: sort by time
+                        //get the usernames and anonymize as necessary
+                        comments.map(com => (
+                            <div>
+                                {com.Body}
+                            </div>
+                        ))
+                    }
                 </div>
             </div>
         )

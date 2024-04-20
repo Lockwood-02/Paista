@@ -13,6 +13,22 @@ router.get('/Posts', async (req, res) => {
   }
 });
 
+// GET all posts in a thread
+router.get("/getThread/:Thread_ID", async (req, res) => {
+  try{
+    const { Thread_ID } = req.params;
+    const comments = await Posts.findAll({
+      where:{
+        Thread_ID:Thread_ID
+      }
+    })
+    res.json(comments);
+  } catch(error){
+    console.error("Error fetching thread: ", error)
+    res.status(500).json({error: 'Could not fetch thread'});
+  }
+});
+
 // POST create a new post
 router.post('/Posts', async (req, res) => {
   try {
