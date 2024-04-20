@@ -61,7 +61,7 @@ const CreatePost = () => {
                     Type:Type
                 });
                 console.log("Axios response: ", res);//debugging
-                nav("/")//TODO: change this to go to the posts location
+                nav("/viewPost?Post_ID=" + res.data.ID);
             }catch(err){
                 console.error("Error submitting post");
                 setMessage("Error: Could not post. Refresh page and try again");
