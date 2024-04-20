@@ -100,7 +100,7 @@ sessionStore.sync({ logging: false });
 
 //synchronize to test db setup, developement only
 sequelize.sync({ logging: false }).then(() => {
-    //console.log('Database synced');
+    console.log('Database synced');
 }).catch(err => {
     console.error('Error syncing database:', err);
 });
@@ -147,8 +147,10 @@ app.post('/api/sessionTest', (req, res) => {
 });
 
 app.get('/api/getUser', (req, res) => {
-
-    res.json({username:req.user.username ?? "not_logged_in"})
+    res.json({
+        username:req.user.username ?? "not_logged_in",
+        id:req.user.id
+    })
 })
 
 //moved from paistaApp/app.js

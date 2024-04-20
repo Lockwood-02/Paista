@@ -259,7 +259,7 @@ suite('User Signup Unit Tests', function() {
         suiteTeardown(async function(){
             Users.destroy({
                 where:{
-                    id: idToDestroy
+                    username: (testUsers.map(x => x.username))
                 }
             })
         })

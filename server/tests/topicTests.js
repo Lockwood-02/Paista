@@ -210,16 +210,17 @@ suite('Topic router tests', function(){
 
     suiteTeardown(async function(){
         //remove the test user
+        Topics.destroy({
+            where:{
+                title: (testTopics.map(x => x.title))
+            }
+        })
+
         Users.destroy({
             where:{
                 id: testUser.id
             }
         })
 
-        Topics.destroy({
-            where:{
-                title: (testTopics.map(x => x.title))
-            }
-        })
     })
 })
