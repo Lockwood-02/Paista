@@ -91,10 +91,30 @@ suite('Access router tests', function(){
         })
     })
 
+    test('Create invalid access', function(done){
+        let testAccess = {
+            Users_ID: 'a',
+            Topic_ID: 'b',
+            Access_Type:'basic'
+        }
+        chai.request(server)
+        .post('/api/accesses')
+        .send(testAccess)
+        .end(function(err, res){
+            assert.equal(res.status, 500);
+            done();
+        })
+    });
+  
     test('Get Accesses', function(done){
         chai.request(server)
         .get('/api/accesses')
         .end(function(err, res){
+            assert.deepInclude(res.body[0],{
+                Users_ID: testUser.id,
+                Topic_ID: testTopics[0].id,
+                Access_Type:'basic'
+            })
             done();
         })
     })
