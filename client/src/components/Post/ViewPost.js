@@ -107,10 +107,10 @@ const ViewPost = () => {
                 //get votes on post by postID and userID to see if user has voted on post
                 const vote = await axiosInstance.get("/api/userVote/" + user.id + "/" + Post_ID);
                 if(vote.data.id){
-                    console.log("current User has voted on the post");
+                    console.log("current User has voted on the post", vote.data);
                     setVote(true);
                 }else{
-                    console.log("Current user has not voted on the post");
+                    console.log("Current user has not voted on the post", vote.error);
                 }
             }catch(err){
                 console.error('Error fetching vote info: ', err);
@@ -133,6 +133,31 @@ const ViewPost = () => {
         setAnonymous(e.target.value);
     }
 
+    const handleVote = async (e) => {
+        try{
+            const voteData = await axiosInstance.get("/api/userVote/" + user.id + "/" + Post_ID);
+            //if the user has voted
+            if(voteData.data.id){
+                const res = await axiosInstance.delete("/api/votes/" + voteData.data.id)
+                if(res.status == 204){
+                    console.log("Vote withdrawn")
+                    setVote(false);
+                }
+            }else{
+                const res = await axiosInstance.post("/api/votes", {
+                    User_ID: user.id,
+                    Post_ID: Post_ID
+                })
+                if(res.status == 201){
+                    console.log("vote cast")
+                    setVote(true)
+                }
+            }
+        }catch(err){
+            console.log("Error updating vote")
+        } 
+    }
+
     if(!Body || Deleted){
         return(
             <div>
@@ -147,6 +172,12 @@ const ViewPost = () => {
                     <p>{Type} {Type != "Announcement" ? "Question" : ""} By: {creatorUsername}</p>
                     <p>Created on: {createdAt}</p>
                     <p>Last Updated: {updatedAt}</p>
+                    <button
+                    onClick={handleVote}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                    {!vote ? "Vote!" : "Withdrawl Vote"}
+                    </button>
                     <br></br>
                     <p>{Body}</p>
                 </div>
