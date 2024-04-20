@@ -11,6 +11,7 @@ import Signup from './components/Signup';
 import Login from './components/Login';
 import CreatePost from './components/Post/CreatePost';
 import EditPost from './components/Post/EditPost';
+import ViewPost from './components/Post/ViewPost';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
               <Route path='sessionTest' element={<SessionTest />} />
               <Route path='createPost' element={<CreatePost />} />
               <Route path='editPost' element={<EditPost />} />
+              <Route path='viewPost' element={<ViewPost />} />
             </Route>
           </Routes>
       </>

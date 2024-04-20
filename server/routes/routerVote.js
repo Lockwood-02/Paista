@@ -40,6 +40,26 @@ router.get('/votes/:id', async (req, res) => {
   }
 });
 
+//GET a single vote by user ID and post ID
+router.get('/userVote/:user_id/:post_id', async (req, res) => {
+  try {
+    const { user_id, post_id } = req.params;
+    const vote = await Votes.findOne({
+      where:{
+        User_ID:user_id,
+        Post_ID: post_id
+      }
+    })
+    if (!vote) {
+      return res.status(200).json({ vote: 'Vote not found' });
+    }
+    res.json(vote);
+  }catch (error) {
+    console.error('Error fetching vote:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+})
+
 // PUT update an existing vote by ID
 router.put('/votes/:id', async (req, res) => {
   try {
