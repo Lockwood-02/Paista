@@ -1,5 +1,5 @@
 // src/components/HomePage.js
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Post from './Post';
 import postData from './postData';
 import logo from '../PiastaFigma.png';
@@ -11,11 +11,11 @@ const HomePage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try{
+            try {
                 const res = await axiosInstance.get("api/getUser");
                 setData(res.data);
                 console.log(data);//debug
-            } catch (err){
+            } catch (err) {
                 console.error('Error fetching username: ', err);
             }
         };
@@ -26,7 +26,15 @@ const HomePage = () => {
             //cancel requests or do cleanup
         };
 
-    },[]);
+    }, []);
+
+    const handleLogout = async () => {
+        try {
+            await axiosInstance.post('/api/logout'); // Make a POST request to the logout endpoint
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
 
 
     return (
@@ -41,12 +49,16 @@ const HomePage = () => {
                     <div className='flex items-center mb-4'>
                         <img src={avatar} alt="Logo" className="mr-2 w-8 h-8" />
                         <p className="mb-2 cursor-pointer mt-2">
-                        {data.username}
+                            {data.username}
                         </p> {/* Put Username here */}
                     </div>
                     <ul>
                         <li className="mb-2 cursor-pointer">Help</li>
                     </ul>
+                </div>
+                {/* Logout button */}
+                <div className='p-4'>
+                    <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-4 rounded mt-4 self-start">Logout</button>
                 </div>
             </div>
 

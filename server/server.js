@@ -23,6 +23,7 @@ const editVoteRouter = require('../server/routes/routerVote.js');
 
 const app = express();
 const port = process.env.PORT || 5000;
+app.set('view engine', 'ejs');
 
 //testing
 require('dotenv').config();
@@ -35,7 +36,7 @@ app.use(logger('dev'));
 const { sequelize, Topics, Posts, Users, Accesses, EditHistories, TitleHistories } = require('./dataAccessLayer/sequelize.js')//will need to include all table names in the import
 
 //cors setup for communication with front-end
-app.use(function(req, res, next){
+app.use(function (req, res, next) {
     // This is causing an error when trying to get to the home page from the login page
     res.header('Access-Control-Allow-Credentials', true);
     res.header('Access-Control-Allow-Origin', req.headers.origin); //TODO: This MUST be updated to the production URL
@@ -46,11 +47,11 @@ app.use(function(req, res, next){
     } else {
         next();
     }
-}) 
+})
 
 
 //allows client communication
-app.use(cors({origin:"http://localhost:3000"})); //can be changed based on env variable
+app.use(cors({ origin: "http://localhost:3000" })); //can be changed based on env variable
 
 //parsing incoming data for easier reading
 // Set up body-parser middleware
@@ -72,27 +73,27 @@ app.use('/api', accessRouter);
 app.use('/api', postRouter);
 
 // Mount the TitleHistoy router
-app.use('/api',  titleHistoryRouter);
+app.use('/api', titleHistoryRouter);
 
 // Mount the EditHistoy router
-app.use('/api',  editHistoryRouter);
+app.use('/api', editHistoryRouter);
 
 // Mount the User router
-app.use('/api',  editUserRouter);
+app.use('/api', editUserRouter);
 
 // Mount the Vote router
-app.use('/api',  editVoteRouter);
+app.use('/api', editVoteRouter);
 
 
 //session setup
 const sessionStore = new sequelizeStore({
-    db:sequelize
+    db: sequelize
 });
 
 app.use(session({
-    secret:"TODO: change me",
-    resave:false,
-    saveUninitialized:false,
+    secret: "TODO: change me",
+    resave: false,
+    saveUninitialized: false,
     store: sessionStore
 }));
 
@@ -111,7 +112,7 @@ signup(app)
 
 //topic search route
 const topicSearch = require('./routes/topicSearch.js');
-app.use('/api',topicSearch);
+app.use('/api', topicSearch);
 
 app.get('/api/test', async (req, res) => {
     const topics = await Topics.findAll();
@@ -132,6 +133,18 @@ app.get('/api/data', (req, res) => {
     });
 });
 
+// Logout route
+app.post('/api/logout', function (req, res, next) {
+    req.logout(function (err) {
+        if (err) {
+            return next(err);
+        }
+        res.redirect('/');
+    });
+
+    console.log('logout called');
+});
+
 //used in testing session
 app.get('/api/sessionTest', (req, res) => {
     console.log("current phrase: ", req.session.phrase);
@@ -147,18 +160,17 @@ app.post('/api/sessionTest', (req, res) => {
 });
 
 app.get('/api/getUser', (req, res) => {
-
-    res.json({username:req.user.username ?? "not_logged_in"})
+    res.json({ username: req.user.username ?? "notloggedin" })
 })
 
 //moved from paistaApp/app.js
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -166,9 +178,9 @@ app.use(function(err, req, res, next) {
     // render the error page
     res.status(err.status || 500);
     res.render('error');
-//});
+    //});
 
-    res.json({username:req.session.user ?? "not_logged_in"})
+    res.json({ username: req.session.user ?? "not_logged_in" })
 });
 
 app.post('/api/login', async (req, res) => {
@@ -176,22 +188,22 @@ app.post('/api/login', async (req, res) => {
     try {
         // Extract form data from request body
         const { username, password } = req.body;
-  
+
         // Find the user by username
         const user = await Users.findOne({ where: { username } });
-  
+
         // Check if the user exists
         if (!user) {
             // User not found, handle accordingly (e.g., display error message)
             return res.status(404).send('User not found');
         }
-        
-  
+
+
         // Compare the hashed password from the database with the password provided
         console.log("User:", user.username, "Hashed:", user.hashedPassword);
         console.log("Password:", password, "User password:", user.password); // Testing to see if there are values
         const passwordMatch = await bcrypt.compare(password, user.hashedPassword); // Using hashedPassword gives 302
-  
+
         if (passwordMatch) {
             // Passwords match, redirect to dashboard or homepage
             req.session.user = user.username;
@@ -207,25 +219,27 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+
+
 //for testing with chai
 module.exports = app;
 
 //use this route as middleware to limit a route to authenticated users only
-function ensureAuthenticated(req,res,next) {
-    if(req.isAuthenticated()){
-      return next();
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
     }
     res.sendStatus(401);//not authenticated
-  };
+};
 
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port} environment type: ${process.env.NODE_ENV}`);
-    if(process.env.NODE_ENV == 'test'){
+    if (process.env.NODE_ENV == 'test') {
         console.log("Running tests...");
-        try{
+        try {
             runner.run();
-        }catch(e){
+        } catch (e) {
             console.log("Invalid test suite: ", e);
         }
     }
