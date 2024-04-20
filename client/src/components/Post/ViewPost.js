@@ -129,6 +129,28 @@ const ViewPost = () => {
 
     }, [user])
 
+    useEffect( () => {
+        const fetchVotes = async () => {
+            try{
+                const voteCount = await axiosInstance("/api/totalVotes/" + Post_ID);
+                if(!voteCount.data.error){
+                    setTotalVotes(voteCount.data.count)
+                }else{
+                    console.error(voteCount.data.error);
+                }
+            }catch(err){
+                console.error('Error fetching vote count', err);
+            }
+        }
+
+        fetchVotes();
+
+        return () => {
+
+        };
+
+    }, [vote])
+
     const handleAnonymousChange = (e) => {
         setAnonymous(e.target.value);
     }
@@ -176,7 +198,7 @@ const ViewPost = () => {
                     onClick={handleVote}
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                     >
-                    {!vote ? "Vote!" : "Withdrawl Vote"}
+                    {!vote ? "Vote!" : "Withdrawl Vote"} ({totalVotes})
                     </button>
                     <br></br>
                     <p>{Body}</p>
