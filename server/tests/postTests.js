@@ -105,7 +105,7 @@ suite('Post router tests', function(){
 
         testPosts.forEach((post,i) => {
             post.Creator_ID = newUser.id;
-            post.Topic_ID = i<2 ? testTopics[i].id : testTopics[0].id;
+            post.Topic_ID = testTopics[0].id;
         })
 
         console.log("Created test posts: ", testPosts[0]);
@@ -164,11 +164,30 @@ suite('Post router tests', function(){
         })
     })
 
+    test('Create a post with a thread ID', (done) => {
+        testPosts[1].Thread_ID = testPosts[0].ID;
+        chai.request(server)
+        .post('/api/Posts')
+        .send(testPosts[1])
+        .end(async function(err,res){
+            assert.equal(res.status,201);
+            assert.include(res.body, testPosts[1]);
+
+            dbPost = await Posts.findByPk(res.body.ID);
+
+            assert.include(dbPost, testPosts[1]);
+            testPosts[1].ID = dbPost.ID;
+            done();
+        })
+    })
+
     test('Get posts', (done) => {
         chai.request(server)
         .get('/api/Posts')
         .end((err,res) =>{
             assert.equal(res.status,200);
+            assert.include(res.body[0], testPosts[0]);
+            assert.include(res.body[1], testPosts[1]);
             done();
         })
     })
