@@ -1,13 +1,13 @@
 // src/components/HomePage.js
 import React, { useState, useEffect } from 'react';
 import Post from './Post';
+import Topics from './Topics';
 import postData from './postData';
-import logo from '../PiastaFigma.png';
-import avatar from '../blankPFPRound.png';
 import axiosInstance from "../modules/axiosInstance";
 
 const HomePage = () => {
     const [data, setData] = useState([]);
+    const [topics, setTopics] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,6 +28,20 @@ const HomePage = () => {
 
     }, []);
 
+    useEffect(() => {
+        const fetchTopics = async () => {
+            try {
+                // Fetch topics from the database
+                const res = await axiosInstance.get("/api/topics");
+                setTopics(res.data);
+            } catch (error) {
+                console.error('Error fetching topics:', error);
+            }
+        };
+
+        fetchTopics();
+    }, []);
+
 
     return (
 
@@ -39,9 +53,9 @@ const HomePage = () => {
                 </div>
                 <div >
                     {/* Render posts using the Post component */}
-                    {postData.map((post, index) => (
-                        <Post key={index} course={post.course} title={post.title} description={post.description} />
-                    ))}
+                    {topics.map((topic) => (
+                    <Topics key={topic.id} title={topic.title} description={topic.description} author={topic.User.username} />
+                ))}
                 </div>
             </div>
         </div>

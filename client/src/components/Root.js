@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import logo from '../PiastaFigma.png';
 import avatar from '../blankPFPRound.png';
 import axiosInstance from "../modules/axiosInstance";
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 const Root = () => {
 
@@ -66,6 +66,9 @@ const Root = () => {
             {/* Sidebar (Right) */}
             <div className="w-1/4 bg-back p-4 pt-[68px]">
                 <h1 className="text-4xl font-medium mb-4 font-header">Courses</h1>
+                <Link to="/form">
+                    <button className="ml-2 bg-blue-500 text-white py-2 px-4 rounded">+</button>
+                </Link>
                 <ul>
                     <li className="mb-2 text-green-500 cursor-pointer">CS 560</li>
                     <li className="mb-2 text-green-500 cursor-pointer">CS 570</li>
