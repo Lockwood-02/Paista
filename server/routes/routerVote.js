@@ -13,6 +13,21 @@ router.get('/votes', async (req, res) => {
   }
 });
 
+// GET all votes for a post
+router.get('/totalVotes/:id', async (req,res) => {
+  try{
+    const { id } = req.params;
+    const { count } = await Votes.findAndCountAll({
+      where:{
+        Post_ID:id
+      }
+    })
+    res.json({count: count})
+  }catch(err){
+    res.json({error:"Could not get all votes: " + err})
+  }
+})
+
 // POST create a new vote
 router.post('/votes', async (req, res) => {
   try {
