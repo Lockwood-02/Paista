@@ -17,13 +17,16 @@ const ViewPost = () => {
     const [createdAt, setCreatedAt] = useState('');
     const [updatedAt, setUpdatedAt] = useState('');
 
-    //used for comments
+    //used for making comments
     const [comBody, setComBody] = useState('');
     const [comAnon, setComAnon] = useState('Unanonymous');
 
     //voting
     const [vote, setVote] = useState(false);
     const [totalVotes, setTotalVotes] = useState(0);
+
+    //used for existing comments
+    const [comments, setComments] = useState([]);
 
     //get query params to determine post id
     const location = useLocation();
@@ -91,9 +94,23 @@ const ViewPost = () => {
             }
         };
 
+        const fetchComments = async () => {
+            try{
+                const res = await axiosInstance.get("api/getThread/" + Post_ID);
+                console.log("comments data: ", res.data);
+                if(!res.data.error){
+                    setComments(res.data);
+                }else{
+                    console.error("Error fetching comments: ", res.data.error)
+                }
+            }catch(err){
+                console.error('Error fetching user info: ', err);
+            }
+        }
+
         fetchUser();
         fetchPost();
-        //fetchVotes();
+        fetchComments();
 
         return () => {
 
@@ -152,7 +169,7 @@ const ViewPost = () => {
     }, [vote])
 
     const handleAnonymousChange = (e) => {
-        setAnonymous(e.target.value);
+        setComAnon(e.target.value);
     }
 
     const handleVote = async (e) => {
@@ -180,6 +197,33 @@ const ViewPost = () => {
         } 
     }
 
+    const handleComment = async (e) => {
+        e.preventDefault();
+        console.log("submitting comment");
+        try{
+            const res = await axiosInstance.post("api/Posts", {
+                Creator_ID:user.id,
+                Thread_ID:Post_ID,
+                Topic_ID:Topic_ID,
+                Solution_ID:Solution_ID,
+                Title:"Response to: " + Title,
+                Body:comBody,
+                Deleted:false,
+                Anonymous: (comAnon === "Anonymous"),
+                Type:"Announcement"
+            });
+            console.log("Axios response: ", res);//debugging
+            setComAnon("Unanonymous");
+            setComBody('');
+        }catch(err){
+            console.error("Error posting comment", err);
+        }
+    }
+
+    //pull and display existing comments
+
+    //solution functionality
+
     if(!Body || Deleted){
         return(
             <div>
@@ -191,7 +235,7 @@ const ViewPost = () => {
             <div>
                 <div className='mb-4'>
                     <h1 className="text-4xl font-medium font-header">{Title}</h1>
-                    <p>{Type} {Type != "Announcement" ? "Question" : ""} By: {creatorUsername}</p>
+                    <p>{Type} {Type != "Announcement" ? "Question" : ""} By: {Anonymous === "Anonymous" ? "Anonymous" : creatorUsername}</p>
                     <p>Created on: {createdAt}</p>
                     <p>Last Updated: {updatedAt}</p>
                     <button
@@ -202,6 +246,57 @@ const ViewPost = () => {
                     </button>
                     <br></br>
                     <p>{Body}</p>
+                    <br></br>
+                    <form onSubmit={handleComment} className="space-y-4">
+                        <div>
+                            <label htmlFor="Body" className="block">
+                                <h2 className="text-xl font-bold mb-2">Leave a comment</h2>
+                                <input
+                                type="text"
+                                id="Body"
+                                name="Body"
+                                value={comBody}
+                                onChange={(e) => setComBody(e.target.value)}
+                                required
+                                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+                                />
+                            </label>
+                        </div>
+
+                        <div>
+                            <h2 className="text-xl font-bold mb-2">Post Anonymously?</h2>
+                            <p>(for saftey purposes administartors will be able to discvoer your identity)</p>
+                            <label htmlFor='Anonymous' className="block">
+                                <input
+                                    type="radio"
+                                    name="Anonymous"
+                                    value="Anonymous"
+                                    checked = {comAnon === "Anonymous"}
+                                    onChange={(handleAnonymousChange)}
+                                />
+                                Post Anonymously
+                            </label>
+                            <label htmlFor='Unanonymous' className="block">
+                                <input
+                                    type="radio"
+                                    name="Unanonymous"
+                                    value="Unanonymous"
+                                    checked = {comAnon === "Unanonymous"}
+                                    onChange={(handleAnonymousChange)}
+                                />
+                                Show user information in post
+                            </label>
+                        </div>
+
+    
+
+                        <button
+                            type="submit"
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        >
+                        Comment
+                        </button>
+                    </form>
                 </div>
             </div>
         )
