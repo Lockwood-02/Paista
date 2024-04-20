@@ -28,7 +28,7 @@ const router = createBrowserRouter(
               <Route path='sessionTest' element={<SessionTest />} />
               <Route path='createPost' element={<CreatePost />} />
               <Route path='editPost' element={<EditPost />} />
-              <Route path='form' element={<TopicAdd />} />
+              <Route path='topics' element={<TopicAdd />} />
             </Route>
           </Routes>
       </>
