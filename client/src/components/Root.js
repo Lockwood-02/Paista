@@ -26,7 +26,7 @@ const Root = () => {
             //cancel requests or do cleanup
         };
 
-    }, [data]);
+    }, []);
 
     return (
 
