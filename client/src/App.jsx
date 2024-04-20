@@ -1,29 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import {createBrowserRouter, RouterProvider, Route, Routes, createRoutesFromElements} from "react-router-dom";
+
+import './index.css';
+// import App from './App';
+
+import HomePage from './components/HomePage';
+import Root from './components/Root';
+import SessionTest from './components/SessionTest';
+import Signup from './components/Signup';
+import Login from './components/Login';
+
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+  <Route
+    path='/*'
+    element={(
+      <>
+          <Routes>
+            <Route path="signup" element={<Signup />} />
+            <Route path='login' element={<Login />} />
+            <Route path='*' element={<Root />} >
+              <Route index element={<HomePage />} />
+              <Route path='sessionTest' element={<SessionTest />} />
+            </Route>
+          </Routes>
+      </>
+    )}
+  />
+
+  )
+
+)
 
 function App() {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    console.log('This is not working');
-    fetch('/api/data')
-      .then((response) => response.json())
-      .then((jsonData) => {
-        console.log('Received data:', jsonData); // Log the received data
-        setData(jsonData);
-      })
-      .catch((error) => console.error('Error fetching data:', error));
-  }, []);
-
   return (
-    <div>
-      <h1>Your React App</h1>
-      <ul>
-        {data.map((item) => (
-          <li key={item.id}>{item.name}</li>
-        ))}
-      </ul>
-    </div>
-  );
+    <RouterProvider router={router} />
+  )
 }
 
 export default App;
