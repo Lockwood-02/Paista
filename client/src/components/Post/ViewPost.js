@@ -110,8 +110,10 @@ const ViewPost = () => {
 
         fetchUser();
         fetchPost();
-        fetchComments();
-
+        if(!Thread_ID){
+            fetchComments();
+        }
+        
         return () => {
 
         };
@@ -248,66 +250,74 @@ const ViewPost = () => {
                     <br></br>
                     <p>{Body}</p>
                     <br></br>
-                    <form onSubmit={handleComment} className="space-y-4">
+                    {!Thread_ID ? (
                         <div>
-                            <label htmlFor="Body" className="block">
-                                <h2 className="text-xl font-bold mb-2">Leave a comment</h2>
-                                <input
-                                type="text"
-                                id="Body"
-                                name="Body"
-                                value={comBody}
-                                onChange={(e) => setComBody(e.target.value)}
-                                required
-                                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-                                />
-                            </label>
-                        </div>
+                            <form onSubmit={handleComment} className="space-y-4">
+                                <div>
+                                    <label htmlFor="Body" className="block">
+                                        <h2 className="text-xl font-bold mb-2">Leave a comment</h2>
+                                        <input
+                                        type="text"
+                                        id="Body"
+                                        name="Body"
+                                        value={comBody}
+                                        onChange={(e) => setComBody(e.target.value)}
+                                        required
+                                        className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+                                        />
+                                    </label>
+                                </div>
 
+                                <div>
+                                    <h2 className="text-xl font-bold mb-2">Post Anonymously?</h2>
+                                    <p>(for saftey purposes administartors will be able to discvoer your identity)</p>
+                                    <label htmlFor='Anonymous' className="block">
+                                        <input
+                                            type="radio"
+                                            name="Anonymous"
+                                            value="Anonymous"
+                                            checked = {comAnon === "Anonymous"}
+                                            onChange={(handleAnonymousChange)}
+                                        />
+                                        Post Anonymously
+                                    </label>
+                                    <label htmlFor='Unanonymous' className="block">
+                                        <input
+                                            type="radio"
+                                            name="Unanonymous"
+                                            value="Unanonymous"
+                                            checked = {comAnon === "Unanonymous"}
+                                            onChange={(handleAnonymousChange)}
+                                        />
+                                        Show user information in post
+                                    </label>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                >
+                                Comment
+                                </button>
+                            </form>
+                            <h2 className="text-xl font-bold mb-2">Comments</h2>
+                            {
+                                //TODO: allow poster to choose solution
+                                //allow poster of comment to edit/delete their comment
+                                //highlight the solution
+                                comments.map(com => (
+                                    <div className="bg-white p-4 mb-4 rounded shadow">
+                                        <p className="text-sm font-semibold">{com.username}</p>
+                                        <p>{com.Body}</p>
+                                        <p className="text-xs">-{formatDate(com.updatedAt)}</p>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    ) : (
                         <div>
-                            <h2 className="text-xl font-bold mb-2">Post Anonymously?</h2>
-                            <p>(for saftey purposes administartors will be able to discvoer your identity)</p>
-                            <label htmlFor='Anonymous' className="block">
-                                <input
-                                    type="radio"
-                                    name="Anonymous"
-                                    value="Anonymous"
-                                    checked = {comAnon === "Anonymous"}
-                                    onChange={(handleAnonymousChange)}
-                                />
-                                Post Anonymously
-                            </label>
-                            <label htmlFor='Unanonymous' className="block">
-                                <input
-                                    type="radio"
-                                    name="Unanonymous"
-                                    value="Unanonymous"
-                                    checked = {comAnon === "Unanonymous"}
-                                    onChange={(handleAnonymousChange)}
-                                />
-                                Show user information in post
-                            </label>
                         </div>
-
-    
-
-                        <button
-                            type="submit"
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        >
-                        Comment
-                        </button>
-                    </form>
-                    <h2 className="text-xl font-bold mb-2">Comments</h2>
-                    {
-                        //TODO: sort by time
-                        //get the usernames and anonymize as necessary
-                        comments.map(com => (
-                            <div>
-                                {com.Body}
-                            </div>
-                        ))
-                    }
+                    )}
                 </div>
             </div>
         )
