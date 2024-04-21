@@ -93,5 +93,16 @@ module.exports = function(app){
         console.log("login route called")//debug
         req.session.user = req.user.username;
         res.sendStatus(200);
-    });  
+    }); 
+
+    app.get('/api/logout', (req, res) => {
+        console.log("User attempted to log out");
+        req.logout( err => {
+            if(err){
+                console.log("Problem loggin out: ", err);
+            }else{
+                res.json({message: "Logout successful!"})
+            }
+        })
+    })
 }
