@@ -1,5 +1,5 @@
 // FormComponent.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axiosInstance from "../modules/axiosInstance";
 
 const TopicAdd = () => {
@@ -10,13 +10,44 @@ const TopicAdd = () => {
     description: ''
   });
 
+  const [user, setUser] = useState({});
+
+  //gets the user to pass the user ID as an argument to topic creation
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const res = await axiosInstance.get("api/getUser");
+            setUser(res.data);
+        } catch (err) {
+            console.error('Error fetching username: ', err);
+        }
+    };
+
+    fetchData();
+
+    return () => {
+        //cancel requests or do cleanup
+    };
+
+  }, []);
+
   // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
 
     try {
+
+      //ensure the get user effect has succeeded
+      if(!user){
+        console.error("Cannot create a topic while not logged in")
+      }
+
       // Send form data to the server
-      const response = await axiosInstance.post('/api/createTopic', formData);
+      const response = await axiosInstance.post('/api/topics', {
+        title: formData.title,
+        description: formData.description,
+        userID: user.id
+      });
 
       // Handle success response
       console.log('Topic created:', response.data);
