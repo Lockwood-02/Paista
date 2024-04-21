@@ -13,6 +13,40 @@ router.get('/Posts', async (req, res) => {
   }
 });
 
+// GET all posts in a thread
+router.get("/getThread/:Thread_ID", async (req, res) => {
+  try{
+    const { Thread_ID } = req.params;
+    const comments = await Posts.findAll({
+      where:{
+        Thread_ID:Thread_ID
+      }
+    })
+    let userIds = []
+    comments.forEach(comment => {
+      userIds.push(comment.dataValues.Creator_ID);
+    })
+    console.log("finding users in: ", userIds);
+    const users = await Users.findAll({
+      where:{
+        id:userIds
+      }
+    })
+    let userMap = {}
+    users.forEach(u => {
+      userMap[u.id] = u.username
+    })
+    comments.forEach(comment => {
+      comment.dataValues.username = userMap[comment.dataValues.Creator_ID]
+    })
+    console.log("Ammended comments: ", comments);
+    res.json(comments);
+  } catch(error){
+    console.error("Error fetching thread: ", error)
+    res.status(500).json({error: 'Could not fetch thread'});
+  }
+});
+
 // POST create a new post
 router.post('/Posts', async (req, res) => {
   try {

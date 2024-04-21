@@ -12,7 +12,7 @@ import Login from './components/Login';
 import CreatePost from './components/CreatePost';
 import EditPost from './components/EditPost';
 import TopicAdd from './components/TopicAdd';
-
+import ViewPost from './components/Post/ViewPost';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,6 +29,7 @@ const router = createBrowserRouter(
               <Route path='createPost' element={<CreatePost />} />
               <Route path='editPost' element={<EditPost />} />
               <Route path='topics' element={<TopicAdd />} />
+              <Route path='viewPost' element={<ViewPost />} />
             </Route>
           </Routes>
       </>
