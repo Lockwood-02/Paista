@@ -33,6 +33,7 @@ const HomePage = () => {
             try {
                 // Fetch topics from the database
                 const res = await axiosInstance.get("/api/topics");
+                console.log("Got the topics: ", res.data);
                 setTopics(res.data);
             } catch (error) {
                 console.error('Error fetching topics:', error);
@@ -54,7 +55,7 @@ const HomePage = () => {
                 <div >
                     {/* Render posts using the Post component */}
                     {topics.map((topic) => (
-                    <Topics key={topic.id} title={topic.title} description={topic.description} author={topic.User.username} />
+                    <Topics key={topic.id} title={topic.title} description={topic.description} author={topic.userID} />
                 ))}
                 </div>
             </div>

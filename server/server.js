@@ -147,8 +147,20 @@ app.post('/api/sessionTest', (req, res) => {
 });
 
 app.get('/api/getUser', (req, res) => {
-
-    res.json({ username: req.user.username ?? "not_logged_in" })
+    console.log("Attempting to get user: ", req.user);
+    if(req.user){
+        console.log("User exits: ", req.user.username, req.user.id);
+        res.json({
+        username: req.user.username,
+        id: req.user.id
+        })
+    }else{
+        console.log("user is not logged in");
+        res.json({
+            username:"not logged in",
+            id:null
+        })
+    }
 })
 
 //moved from paistaApp/app.js
