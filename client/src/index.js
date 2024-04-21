@@ -8,6 +8,8 @@ import DevTest from './components/DevTest';
 import Signup from './components/Signup';
 import Login from './components/Login';
 import SessionTest from './components/SessionTest';
+import FormComponent from './components/FormComponent';
+import TopicComponent from './components/TopicComponent';
 
 //import {HomePage, DevTest, Signup, Login} from './components/';
 
@@ -16,26 +18,34 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 
 const router = createBrowserRouter([
   {
-    path:"/",
+    path: "/",
     element: <HomePage />
   },
   {
-    path:"devTest",
+    path: "devTest",
     element: <DevTest />
   },
   {
-    path:"signup",
+    path: "signup",
     element: <Signup />
   },
   {
-    path:"login",
-    element:<Login />
+    path: "login",
+    element: <Login />
   },
   {
-    path:"sessionTest",
-    element:<SessionTest />
+    path: "sessionTest",
+    element: <SessionTest />
+  },
+  {
+    path: "createTopic", 
+    element: <FormComponent />
+  },
+  {
+    path: "topics", 
+    element: <TopicComponent /> 
   }
-])
+]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
