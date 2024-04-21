@@ -49,8 +49,12 @@ const Root = () => {
         }
     }
 
-    return (
+    const handleLogin = (e) => {
+        //sends user to the login page
+        nav("/login");
+    }
 
+    return (
         <div className="flex h-screen">
             {/* Sidebar (Left) */}
             <div className="w-1/4 bg-back p-4">
@@ -65,10 +69,17 @@ const Root = () => {
                             {data.username}
                         </p> {/* Put Username here */}
                     </div>
-                    {/* Logout button */}
-                    <div className='p-4'>
-                        <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-4 rounded mt-4 self-start">Logout</button>
-                    </div>
+                    {data.id ? (
+                        <div className='p-4'>
+                            <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-4 rounded mt-4 self-start">Logout</button>
+                        </div>
+                    ) : (
+                        <div className='p-4'>
+                            <button onClick={handleLogin} className="bg-blue-500 text-white py-2 px-4 rounded mt-4 self-start">Login</button>
+                        </div>
+                    )
+                    }
+                    
                     <ul>
                         <li className="mb-2 cursor-pointer">Help</li>
                     </ul>
