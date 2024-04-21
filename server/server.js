@@ -147,15 +147,15 @@ app.post('/api/sessionTest', (req, res) => {
 });
 
 app.get('/api/getUser', (req, res) => {
-    console.log("Attempting to get user: ", req.user);
+    //console.log("Attempting to get user: ", req.user);
     if(req.user){
-        console.log("User exits: ", req.user.username, req.user.id);
+        //console.log("User exits: ", req.user.username, req.user.id);
         res.json({
-        username: req.user.username,
-        id: req.user.id
+            username: req.user.username,
+            id: req.user.id
         })
     }else{
-        console.log("user is not logged in");
+        //console.log("user is not logged in");
         res.json({
             username:"not logged in",
             id:null
