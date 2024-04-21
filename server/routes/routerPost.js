@@ -22,6 +22,24 @@ router.get("/getThread/:Thread_ID", async (req, res) => {
         Thread_ID:Thread_ID
       }
     })
+    let userIds = []
+    comments.forEach(comment => {
+      userIds.push(comment.dataValues.Creator_ID);
+    })
+    console.log("finding users in: ", userIds);
+    const users = await Users.findAll({
+      where:{
+        id:userIds
+      }
+    })
+    let userMap = {}
+    users.forEach(u => {
+      userMap[u.id] = u.username
+    })
+    comments.forEach(comment => {
+      comment.dataValues.username = userMap[comment.dataValues.Creator_ID]
+    })
+    console.log("Ammended comments: ", comments);
     res.json(comments);
   } catch(error){
     console.error("Error fetching thread: ", error)
