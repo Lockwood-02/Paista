@@ -100,6 +100,8 @@ module.exports = function(app){
         req.logout( err => {
             if(err){
                 console.log("Problem loggin out: ", err);
+            }else{
+                res.json({message: "Logout successful!"})
             }
         })
     })

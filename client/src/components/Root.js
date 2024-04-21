@@ -3,23 +3,24 @@ import React, { useState, useEffect } from 'react';
 import logo from '../PiastaFigma.png';
 import avatar from '../blankPFPRound.png';
 import axiosInstance from "../modules/axiosInstance";
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+
 
 const Root = () => {
 
     const [data, setData] = useState([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await axiosInstance.get("api/getUser");
-                setData(res.data);
-                console.log(data);//debug
-            } catch (err) {
-                console.error('Error fetching username: ', err);
-            }
-        };
+    const fetchData = async () => {
+        try {
+            const res = await axiosInstance.get("api/getUser");
+            setData(res.data);
+            console.log(data);//debug
+        } catch (err) {
+            console.error('Error fetching username: ', err);
+        }
+    };
 
+    useEffect(() => {
         fetchData();
 
         return () => {
@@ -27,6 +28,26 @@ const Root = () => {
         };
 
     }, []);
+
+    //redirect
+    const nav = useNavigate();
+
+    const handleLogout = async (e) => {
+        console.log("handling logout...")
+        try{
+            const res = await axiosInstance.get("api/logout");
+            if(!res.error){
+                console.log("You are logged out");
+                fetchData();
+                nav("/") //send logged out user to homepage
+            }else{
+                console.error("axios recieved an error logging out: ", res.error);
+            }
+
+        }catch(err){
+            console.error("caught error logging out: ", err)
+        }
+    }
 
     return (
 
@@ -43,6 +64,10 @@ const Root = () => {
                         <p className="mb-2 cursor-pointer mt-2">
                             {data.username}
                         </p> {/* Put Username here */}
+                    </div>
+                    {/* Logout button */}
+                    <div className='p-4'>
+                        <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-4 rounded mt-4 self-start">Logout</button>
                     </div>
                     <ul>
                         <li className="mb-2 cursor-pointer">Help</li>
