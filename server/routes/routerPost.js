@@ -5,6 +5,9 @@ const { Op } = require('sequelize');
 
 // GET all posts
 router.get('/Posts', async (req, res) => {
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }
   try {
     const posts = await Posts.findAll();
     res.json(posts);
@@ -16,6 +19,9 @@ router.get('/Posts', async (req, res) => {
 
 // GET all posts in a thread
 router.get("/getThread/:Thread_ID", async (req, res) => {
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }
   try{
     const { Thread_ID } = req.params;
     const comments = await Posts.findAll({
@@ -75,6 +81,9 @@ router.get('/admin/posts/:search', async (req,res) => {
 
 // POST create a new post
 router.post('/Posts', async (req, res) => {
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }
   try {
     const { Creator_ID, Thread_ID, Topic_ID, Solution_ID, Title, Body, Deleted, Anonymous, Type } = req.body;
     if(['Announcement', 'Resolved', 'Unresolved'].indexOf(Type) < 0){
@@ -91,6 +100,9 @@ router.post('/Posts', async (req, res) => {
 
 // GET a single post by ID
 router.get('/Posts/:id', async (req, res) => {
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }
   try {
     const { id } = req.params;
     const post = await Posts.findByPk(id);

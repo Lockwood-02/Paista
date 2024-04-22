@@ -5,6 +5,9 @@ const { Op } = require('sequelize');
 
 // GET all users
 router.get('/users', async (req, res) => {
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }
   try {
     const users = await Users.findAll();
     res.json(users);

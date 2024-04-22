@@ -4,6 +4,9 @@ const { Topics, Users } = require('../dataAccessLayer/sequelize.js');
 
 // GET all topics
 router.get('/topics', async (req, res) => {
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }
   try {
     const topics = await Topics.findAll();
     res.json(topics);

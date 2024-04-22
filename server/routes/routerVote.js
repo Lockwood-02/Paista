@@ -30,6 +30,9 @@ router.get('/totalVotes/:id', async (req,res) => {
 
 // POST create a new vote
 router.post('/votes', async (req, res) => {
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }
   try {
     const { User_ID, Post_ID } = req.body;
     const newVote = await Votes.create({ User_ID, Post_ID });
@@ -57,6 +60,9 @@ router.get('/votes/:id', async (req, res) => {
 
 //GET a single vote by user ID and post ID
 router.get('/userVote/:user_id/:post_id', async (req, res) => {
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }
   try {
     const { user_id, post_id } = req.params;
     const vote = await Votes.findOne({
