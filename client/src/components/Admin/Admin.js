@@ -102,7 +102,7 @@ const Admin = () => {
                             </div>
                         ) : (
                             users.map(u => (
-                                <div className="bg-white p-4 mb-4 rounded shadow flex justify-between">
+                                <div key={u.username} className="bg-white p-4 mb-4 rounded shadow flex justify-between">
                                     <span>{u.username}</span>
                                     <button 
                                     onClick={() => nav('/Admin/users/' + u.id)}
@@ -132,7 +132,7 @@ const Admin = () => {
                             </div>
                         ) : (
                             posts.map(u => (
-                                <div className="bg-white p-4 mb-4 rounded shadow flex justify-between">
+                                <div key={u.Title} className="bg-white p-4 mb-4 rounded shadow flex justify-between">
                                     <span>{u.Title}</span>
                                     <button 
                                     onClick={() => nav('/Admin/posts/' + u.ID)}
