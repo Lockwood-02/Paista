@@ -59,25 +59,21 @@ const Root = () => {
     return (
         <div className="flex h-screen">
             {/* Sidebar (Left) */}
-            <div className="w-1/4 bg-back p-4 flex flex-col justify-between">
-                <div>
-                <div className="flex items-center mb-4">
+            <div className="w-1/4 bg-back p-4">
+                <Link className="flex items-center mb-4" to="/">
                     <img src={logo} alt="Logo" className="mr-2 w-32 h-32" />
                     <h1 className="text-4xl font-medium mb-4 mt-8 font-header">Paista</h1>
-                </div>
+                </Link>
                 <div className='ml-8'>
                     <div className='flex items-center mb-4'>
-                        <img src={avatar} alt="Logo" className="mr-2 w-8 h-8" />
-                        <p id="rootUsername" className="mb-2 cursor-pointer mt-2">
-                            {data.username}
-                        </p> {/* Put Username here */}
+                        <Link to={"/profile/" + data.id}>
+                            <img src={avatar} alt="Logo" className="mr-2 w-8 h-8" />
+                            <p id="rootUsername" className="mb-2 cursor-pointer mt-2">
+                                {data.username}
+                            </p> {/* Put Username here */}
+                        </Link>
                     </div>
-                    
-                    <ul>
-                        <li className="mb-2 cursor-pointer">Help</li>
-                    </ul>
                 </div>
-            </div>
                     {data.id ? (
                         <div className='p-4'>
                             <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-4 rounded mt-4 self-start">Logout</button>
