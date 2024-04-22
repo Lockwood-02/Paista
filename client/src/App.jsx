@@ -14,6 +14,9 @@ import EditPost from './components/Post/EditPost';
 import TopicAdd from './components/TopicAdd';
 import ViewPost from './components/Post/ViewPost';
 import TopicComponent from './components/TopicComponent';
+import Admin from './components/Admin/Admin';
+import AdminUsers from './components/Admin/AdminUsers';
+import AdminPosts from './components/Admin/AdminPosts';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,6 +35,9 @@ const router = createBrowserRouter(
               <Route path='topics' element={<TopicAdd />} />
               <Route path='viewPost' element={<ViewPost />} />
               <Route path='TopicComponent' element={<TopicComponent />} />
+              <Route path='Admin' element={<Admin />} />
+              <Route path='Admin/users/:dataId' element={<AdminUsers />} />
+              <Route path='Admin/posts/:dataId' element={<AdminPosts />} />
             </Route>
           </Routes>
       </>

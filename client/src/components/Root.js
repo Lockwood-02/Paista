@@ -13,7 +13,6 @@ const Root = () => {
         try {
             const res = await axiosInstance.get("api/getUser");
             setData(res.data);
-            console.log(data);//debug
         } catch (err) {
             console.error('Error fetching username: ', err);
         }

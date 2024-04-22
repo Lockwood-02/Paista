@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Posts, Users, Topics } = require('../dataAccessLayer/sequelize.js');
+const { Op } = require('sequelize');
 
 // GET all posts
 router.get('/Posts', async (req, res) => {
@@ -46,6 +47,25 @@ router.get("/getThread/:Thread_ID", async (req, res) => {
     res.status(500).json({error: 'Could not fetch thread'});
   }
 });
+
+//GET 20 posts with a title matching a given string
+router.get('/admin/posts/:search', async (req,res) => {
+  try{
+    const { search } = req.params;
+    const posts = await Posts.findAll({
+      where:{
+        Title:{
+            [Op.startsWith]:search
+        }
+      },
+      limit:20
+    })
+    res.json(posts);
+  }catch (error) {
+    console.error('Error searching for posts for the admin:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+})
 
 // POST create a new post
 router.post('/Posts', async (req, res) => {
