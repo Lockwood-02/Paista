@@ -60,7 +60,8 @@ const Root = () => {
     return (
         <div className="flex h-screen">
             {/* Sidebar (Left) */}
-            <div className="w-1/4 bg-back p-4">
+            <div className="w-1/4 bg-back p-4 flex flex-col justify-between">
+                <div>
                 <div className="flex items-center mb-4">
                     <img src={logo} alt="Logo" className="mr-2 w-32 h-32" />
                     <h1 className="text-4xl font-medium mb-4 mt-8 font-header">Paista</h1>
@@ -72,6 +73,12 @@ const Root = () => {
                             {data.username}
                         </p> {/* Put Username here */}
                     </div>
+                    
+                    <ul>
+                        <li className="mb-2 cursor-pointer">Help</li>
+                    </ul>
+                </div>
+            </div>
                     {data.id ? (
                         <div className='p-4'>
                             <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-4 rounded mt-4 self-start">Logout</button>
@@ -82,12 +89,7 @@ const Root = () => {
                         </div>
                     )
                     }
-                    
-                    <ul>
-                        <li className="mb-2 cursor-pointer">Help</li>
-                    </ul>
-                </div>
-            </div>
+                    </div>
 
 
             {/* Main Content */}
@@ -107,8 +109,8 @@ const Root = () => {
 
             {/* Sidebar (Right) */}
             <div className="w-1/4 bg-back p-4 pt-[68px]">
-                <h1 className="text-4xl font-medium mb-4 font-header">Courses</h1>
-                <button onClick={handleAddTopic} className="ml-2 bg-blue-500 text-white py-2 px-4 rounded">+</button>
+                <h1 className="text-4xl font-medium mb-4 font-header">Courses <button onClick={handleAddTopic} className="ml-2 bg-blue-500 text-white py-2 px-4 rounded">+</button></h1>
+                
                 <ul>
                     <li className="mb-2 text-green-500 cursor-pointer">CS 560</li>
                     <li className="mb-2 text-green-500 cursor-pointer">CS 570</li>
