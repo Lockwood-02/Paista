@@ -1,13 +1,11 @@
-// src/components/HomePage.js
 import React, { useState, useEffect } from 'react';
-import Post from './Post';
-import Topics from './Topics';
-import postData from './postData';
 import axiosInstance from "../modules/axiosInstance";
+import TopicComponent from './TopicComponent';
 
 const HomePage = () => {
     const [data, setData] = useState([]);
     const [topics, setTopics] = useState([]);
+    const [isTopicFormVisible, setIsTopicFormVisible] = useState(false); // State to manage the visibility of the topic form
 
     useEffect(() => {
         const fetchData = async () => {
@@ -43,22 +41,23 @@ const HomePage = () => {
         fetchTopics();
     }, []);
 
+    const handleToggleTopicForm = () => {
+        setIsTopicFormVisible(!isTopicFormVisible); // Toggle the visibility of the topic form
+    };
 
     return (
-
         <div>
             {/* Main Content */}
             <div className="">
                 <div className="mb-4">
                     <h1 className="text-4xl font-medium font-header">Home</h1>
                 </div>
-                <div >
-                    {/* Render posts using the Post component */}
-                    {topics.map((topic) => (
-                    <Topics key={topic.id} title={topic.title} description={topic.description} author={topic.userID} />
-                ))}
+                <div>
+                    {/* Render topics using the TopicComponent */}
+                    <TopicComponent />
                 </div>
             </div>
+
         </div>
     );
 };
