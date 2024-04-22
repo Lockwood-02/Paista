@@ -149,6 +149,62 @@ suite('Functional Tests', function() {
         });
     });
 
+    suite('Signup', function(){
+        suiteSetup(async function() {
+            await browser.visit('/signup');
+        });
+
+        test('UI format', function(done){
+            assert.isNotNull(browser.site, "page doesn't exist");
+            const h1Elements = browser.queryAll('h1');
+            const h1texts = h1Elements.map(h => h.textContent);
+            assert.include(h1texts, 'Sign Up');
+            browser.assert.elements('input#username',1);
+            browser.assert.elements('input#password',1);
+            browser.assert.elements('input#email',1);
+            browser.assert.elements('input#firstName',1);
+            browser.assert.elements('input#lastName',1);
+            browser.assert.text('button','Sign up');
+            const labels = browser.queryAll('label');
+            const labelTexts = labels.map(l => l.textContent);
+            assert.include(labelTexts, "Username:");
+            assert.include(labelTexts, "Password:");
+            assert.include(labelTexts, "Email:");
+            assert.include(labelTexts, "First Name:");
+            assert.include(labelTexts, "Last Name:");
+            done();
+        });
+
+        test('Signing up', async function(){
+            assert.isNotNull(browser.site, "page doesn't exist");
+
+            await browser.fill('input#username',testUser.username);
+            await browser.fill('input#password',testUser.password);
+            await browser.fill('input#email',testUser.email);
+            await browser.fill('input#firstName',testUser.firstName);
+            await browser.fill('input#lastName',testUser.lastName);
+
+            await browser.pressButton('button#signupButton');
+            browser.assert.success('button press failed')
+            browser.assert.url("http://localhost:3000/login")
+            //check to ensure user is added to database
+            const db = await Users.findOne({
+                where:{
+                    username:testUser.username
+                }
+            })
+            assert.isNotNull(db);
+        })
+
+        suiteTeardown(async function(){
+            Users.destroy({
+                where:{
+                    username:testUser.username
+                }
+            });
+        });
+    })
+
 
     suiteTeardown(async function(){
         
