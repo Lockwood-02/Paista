@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Users } = require('../dataAccessLayer/sequelize.js');
+const { Op } = require('sequelize');
 
 // GET all users
 router.get('/users', async (req, res) => {
@@ -12,6 +13,25 @@ router.get('/users', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+// GET 20 users with names that match a given string
+router.get('/admin/users/:search', async (req,res) => {
+  try{
+    const { search } = req.params;
+    const users = await Users.findAll({
+      where:{
+        username:{
+            [Op.startsWith]:search
+        }
+      },
+      limit:20
+    })
+    res.json(users);
+  }catch (error) {
+    console.error('Error searching for users for the admin:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+})
 
 // POST create a new user
 router.post('/users', async (req, res) => {
