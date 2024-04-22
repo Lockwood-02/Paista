@@ -16,20 +16,26 @@ router.get('/users', async (req, res) => {
 
 // GET 20 users with names that match a given string
 router.get('/admin/users/:search', async (req,res) => {
-  try{
-    const { search } = req.params;
-    const users = await Users.findAll({
-      where:{
-        username:{
-            [Op.startsWith]:search
-        }
-      },
-      limit:20
-    })
-    res.json(users);
-  }catch (error) {
-    console.error('Error searching for users for the admin:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+  if(!req.user){
+    return res.status(401);
+  }else if(req.user.userClass !== 2){
+    return res.status(401)
+  }else{
+    try{
+      const { search } = req.params;
+      const users = await Users.findAll({
+        where:{
+          username:{
+              [Op.startsWith]:search
+          }
+        },
+        limit:20
+      })
+      res.json(users);
+    }catch (error) {
+      console.error('Error searching for users for the admin:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
 })
 

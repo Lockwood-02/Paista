@@ -50,20 +50,26 @@ router.get("/getThread/:Thread_ID", async (req, res) => {
 
 //GET 20 posts with a title matching a given string
 router.get('/admin/posts/:search', async (req,res) => {
-  try{
-    const { search } = req.params;
-    const posts = await Posts.findAll({
-      where:{
-        Title:{
-            [Op.startsWith]:search
-        }
-      },
-      limit:20
-    })
-    res.json(posts);
-  }catch (error) {
-    console.error('Error searching for posts for the admin:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+  if(!req.user){
+    return res.status(401);
+  }else if(req.user.userClass !== 2){
+    return res.status(401)
+  }else{
+    try{
+      const { search } = req.params;
+      const posts = await Posts.findAll({
+        where:{
+          Title:{
+              [Op.startsWith]:search
+          }
+        },
+        limit:20
+      })
+      res.json(posts);
+    }catch (error) {
+      console.error('Error searching for posts for the admin:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
 })
 
