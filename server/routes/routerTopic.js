@@ -15,25 +15,31 @@ router.get('/topics', async (req, res) => {
 
 // POST create a new topic
 router.post('/topics', async (req, res) => {
-  try {
-    const { title, description, userID } = req.body;
-
-    const topicExists = await Topics.findOne({
-      where:{
-        title: title
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }else if(req.user.userClass < 1){
+    return res.status(401).json({error: "You must be an instructor to create a topic"});
+  }else{
+    try {
+      const { title, description, userID } = req.body;
+  
+      const topicExists = await Topics.findOne({
+        where:{
+          title: title
+        }
+      })
+  
+      if(topicExists){
+        res.json({error:"topic name is already in use"})
+      }else{
+        const newTopic = await Topics.create({ title, description, userID });
+        res.status(201).json(newTopic);
       }
-    })
-
-    if(topicExists){
-      res.json({error:"topic name is already in use"})
-    }else{
-      const newTopic = await Topics.create({ title, description, userID });
-      res.status(201).json(newTopic);
+  
+    } catch (error) {
+      console.error('Error creating topic:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
-
-  } catch (error) {
-    console.error('Error creating topic:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
