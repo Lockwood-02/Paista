@@ -1,7 +1,9 @@
 const chaiHttp = require('chai-http');
 const chai = require('chai');
 const assert = chai.assert;
+const bcrypt = require('bcrypt');
 
+const { Users, Topics, Posts } = require('../dataAccessLayer/sequelize.js');
 
 const Browser = require('zombie');
 Browser.site = 'http://localhost:3000';
@@ -10,9 +12,9 @@ const browser = new Browser();
 chai.use(chaiHttp);
 
 let testUser = {
-    username: "alt_ajt",
+    username: "anotherAndrew",
     password: 'P@ssw0rd',
-    email: 'ajamt@ky.gov',
+    email: 'ana@ky.gov',
     firstName:'Andrew',
     lastName:'Toussaint'
 }
@@ -93,9 +95,22 @@ suite('Functional Tests', function() {
         });
     })
 
-    suite('Signup', function(){
-        suiteSetup(function(done){
-            return browser.visit('/login',done);
+    suite('Login', function(){
+        suiteSetup(async function(){
+            const { username, password, email, firstName, lastName } = testUser
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+        
+            // Create a new user using Sequelize model methods with hashed password
+            const newUser = await Users.create({
+                username,
+                hashedPassword: hashedPassword,
+                email,
+                firstName,
+                lastName
+            });
+            testUser.id = newUser.id;
+            await browser.visit('/login');
         });
 
         test('UI format', function(done){
@@ -113,11 +128,30 @@ suite('Functional Tests', function() {
             done();
         });
 
+        test('Logging in', async function(){
+            assert.isNotNull(browser.site, "page doesn't exist");
 
-    })
+            await browser.fill('username', testUser.username);
+            await browser.fill('hashedPassword', testUser.password);
+
+            await browser.pressButton('button#loginButton');
+            browser.assert.success("button press failed");
+            browser.assert.url("http://localhost:3000/");
+            browser.assert.text("p#rootUsername", testUser.username);
+        });
+
+        suiteTeardown(async function(){
+            await Users.destroy({
+                where:{
+                    id:testUser.id
+                }
+            });
+        });
+    });
 
 
-    suiteTeardown(function(){
+    suiteTeardown(async function(){
+        
         browser.destroy();
     });
 })
