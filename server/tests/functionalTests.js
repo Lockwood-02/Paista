@@ -90,7 +90,7 @@ suite('Functional Tests', function() {
             const h1texts = h1Elements.map(h => h.textContent);
             assert.include(h1texts, 'Paista', "Paista header is missing or text changed, should be 'Paista'");
             assert.include(h1texts, 'Home', "Home header is missing or text changed, should be 'Home'");
-            assert.include(h1texts, 'Courses', "Course header is missing or text changed, should be 'Courses'");
+            assert.include(h1texts, 'Courses +', "Course header is missing or text changed, should be 'Courses'");
             done();
         });
     })
