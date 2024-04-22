@@ -74,6 +74,7 @@ module.exports = function(app){
                     username,
                     hashedPassword: hashedPassword,
                     email,
+                    userClass: 0,
                     firstName,
                     lastName
                 });

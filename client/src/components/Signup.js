@@ -81,7 +81,7 @@ const Signup = () => {
                         <label htmlFor="lastName" className="block">Last Name:</label>
                         <input type="text" id="lastName" name="lastName" required value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500" />
                     </div>
-                    <button type='submit' className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Sign up</button>
+                    <button id='signupButton' type='submit' className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Sign up</button>
                 </form>
             </div>
         </div>

@@ -62,28 +62,6 @@ app.use(bodyParser.json());
 // Set up cookie parser middleware
 app.use(cookieParser());
 
-// Use the topicsRouter for routes starting with /topics
-app.use('/api', topicsRouter);
-
-// Mount the access router
-app.use('/api', accessRouter);
-
-// Mount the Posts router
-app.use('/api', postRouter);
-
-// Mount the TitleHistoy router
-app.use('/api', titleHistoryRouter);
-
-// Mount the EditHistoy router
-app.use('/api', editHistoryRouter);
-
-// Mount the User router
-app.use('/api', editUserRouter);
-
-// Mount the Vote router
-app.use('/api', editVoteRouter);
-
-
 //session setup
 const sessionStore = new sequelizeStore({
     db: sequelize
@@ -162,6 +140,27 @@ app.get('/api/getUser', (req, res) => {
         })
     }
 })
+
+// Use the topicsRouter for routes starting with /topics
+app.use('/api', topicsRouter);
+
+// Mount the access router
+app.use('/api', accessRouter);
+
+// Mount the Posts router
+app.use('/api', postRouter);
+
+// Mount the TitleHistoy router
+app.use('/api', titleHistoryRouter);
+
+// Mount the EditHistoy router
+app.use('/api', editHistoryRouter);
+
+// Mount the User router
+app.use('/api', editUserRouter);
+
+// Mount the Vote router
+app.use('/api', editVoteRouter);
 
 //moved from paistaApp/app.js
 // catch 404 and forward to error handler

@@ -81,6 +81,8 @@ router.get('/Posts/:id', async (req, res) => {
 // PUT update an existing post by ID
 router.put('/Posts/:id', async (req, res) => {
   let user = req.user;
+  console.log("PUT on post requested by user: ", user);
+  console.log("Attempting to update with data: ", req.body);
   try {
     const { id } = req.params;
     const { Creator_ID, Thread_ID, Topic_ID, Solution_ID, Title, Body, Deleted, Anonymous, Type } = req.body;
@@ -90,7 +92,7 @@ router.put('/Posts/:id', async (req, res) => {
     const post = await Posts.findByPk(id);
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
-    }else if(req.user.userClass !== 2 && post.Creator_ID !== user.id){
+    }else if(user.userClass !== 2 && post.Creator_ID !== user.id){
       //user cannot edit another users post unless they are the admin
       return res.status(401).json({error: "User is not permitted to edit this post"})
     }
