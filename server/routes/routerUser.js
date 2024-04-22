@@ -17,9 +17,9 @@ router.get('/users', async (req, res) => {
 // GET 20 users with names that match a given string
 router.get('/admin/users/:search', async (req,res) => {
   if(!req.user){
-    return res.status(401);
+    return res.status(401).json({error: "you are not logged in"});
   }else if(req.user.userClass !== 2){
-    return res.status(401)
+    return res.status(401).json({error: "Admin only"});
   }else{
     try{
       const { search } = req.params;
@@ -68,19 +68,26 @@ router.get('/users/:id', async (req, res) => {
 
 // PUT update an existing user by ID
 router.put('/users/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { username, hashedPassword, userClass, banned, dateCreated, email, firstName, lastName } = req.body;
-    const user = await Users.findByPk(id);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+  const { id } = req.params;
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }else if(req.user.id !== id && req.user.userClass !== 2){
+    return res.status(401).json({error: "You are not authorized to update this users information"});
+  }else{
+    try {
+      const { username, hashedPassword, userClass, banned, dateCreated, email, firstName, lastName } = req.body;
+      const user = await Users.findByPk(id);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      await user.update({ username, hashedPassword, userClass, banned, dateCreated, email, firstName, lastName });
+      res.json(user);
+    } catch (error) {
+      console.error('Error updating user:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
-    await user.update({ username, hashedPassword, userClass, banned, dateCreated, email, firstName, lastName });
-    res.json(user);
-  } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
   }
+  
 });
 
 // DELETE delete an existing user by ID

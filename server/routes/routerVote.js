@@ -94,17 +94,24 @@ router.put('/votes/:id', async (req, res) => {
 
 // DELETE delete an existing vote by ID
 router.delete('/votes/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const vote = await Votes.findByPk(id);
-    if (!vote) {
-      return res.status(404).json({ error: 'Vote not found' });
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }else{
+    try {
+      const { id } = req.params;
+      const vote = await Votes.findByPk(id);
+      if (!vote) {
+        return res.status(404).json({ error: 'Vote not found' });
+      }else if(req.user.id !== vote.User_ID && req.user.userClass !== 2){
+        return res.status(401).json({error: "You are not authorized to withdrawl this vote"});
+      }else{
+        await vote.destroy();
+        res.sendStatus(204);
+      }
+    } catch (error) {
+      console.error('Error deleting vote:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
-    await vote.destroy();
-    res.sendStatus(204);
-  } catch (error) {
-    console.error('Error deleting vote:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

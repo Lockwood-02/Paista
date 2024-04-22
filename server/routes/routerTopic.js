@@ -54,6 +54,9 @@ router.get('/topics/:id', async (req, res) => {
 
 // PUT update an existing topic by ID
 router.put('/topics/:id', async (req, res) => {
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }
   try {
     const { id } = req.params;
     const { title, description } = req.body;

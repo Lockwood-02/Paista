@@ -51,9 +51,9 @@ router.get("/getThread/:Thread_ID", async (req, res) => {
 //GET 20 posts with a title matching a given string
 router.get('/admin/posts/:search', async (req,res) => {
   if(!req.user){
-    return res.status(401);
+    return res.status(401).json({error: "you are not logged in"});
   }else if(req.user.userClass !== 2){
-    return res.status(401)
+    return res.status(401).json({error: "Admin only"});
   }else{
     try{
       const { search } = req.params;
