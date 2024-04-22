@@ -81,6 +81,8 @@ router.get('/Posts/:id', async (req, res) => {
 // PUT update an existing post by ID
 router.put('/Posts/:id', async (req, res) => {
   let user = req.user;
+  console.log("PUT on post requested by user: ", user);
+  console.log("Attempting to update with data: ", req.body);
   try {
     const { id } = req.params;
     const { Creator_ID, Thread_ID, Topic_ID, Solution_ID, Title, Body, Deleted, Anonymous, Type } = req.body;

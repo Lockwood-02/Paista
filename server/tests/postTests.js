@@ -203,13 +203,32 @@ suite('Post router tests', function(){
     })
 
     test('Update title', (done) => {
+        let agent = chai.request.agent(server)
+        testPosts[1].Title = "Edit: Quiz on Thursday!"
+
+        agent.post('/api/login')
+        .send({
+            username: testUser.username,
+            password: testUser.password
+        }).end((err,res) => {
+            assert.equal(res.status,200);
+            agent.put('/api/Posts/' + testPosts[1].ID)
+            .send(testPosts[1])
+            .end((err,res) =>{
+                assert.equal(res.status,200);
+                assert.include(res.body, testPosts[1]);
+                done();
+            })
+        })
+    })
+
+    test('Update title without auth', (done) => {
         testPosts[1].Title = "Edit: Quiz on Thursday!"
         chai.request(server)
         .put('/api/Posts/' + testPosts[1].ID)
         .send(testPosts[1])
         .end((err,res) =>{
-            assert.equal(res.status,200);
-            assert.include(res.body, testPosts[1]);
+            assert.equal(res.status,500);
             done();
         })
     })
@@ -235,7 +254,8 @@ suite('Post router tests', function(){
             assert.equal(res.status,500);
             assert.deepEqual(res.body, {error: "attempted to create post with invalid type"});
             dbPost = await Posts.findByPk(testPosts[1].ID);
-            assert.include(dbPost, testPosts[1]);
+            console.log("Not sure why this assert is timing out: ", dbPost.dataValues, testPosts[1]);
+            assert.include(dbPost.dataValues, testPosts[1]);
             done();
         })
     })
