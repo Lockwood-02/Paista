@@ -60,16 +60,18 @@ const Root = () => {
         <div className="flex h-screen">
             {/* Sidebar (Left) */}
             <div className="w-1/4 bg-back p-4">
-                <div className="flex items-center mb-4">
+                <Link className="flex items-center mb-4" to="/">
                     <img src={logo} alt="Logo" className="mr-2 w-32 h-32" />
                     <h1 className="text-4xl font-medium mb-4 mt-8 font-header">Paista</h1>
-                </div>
+                </Link>
                 <div className='ml-8'>
                     <div className='flex items-center mb-4'>
+                        <Link to={"/profile/" + data.id}>
                         <img src={avatar} alt="Logo" className="mr-2 w-8 h-8" />
                         <p id="rootUsername" className="mb-2 cursor-pointer mt-2">
                             {data.username}
                         </p> {/* Put Username here */}
+                        </Link>
                     </div>
                     {data.id ? (
                         <div className='p-4'>
