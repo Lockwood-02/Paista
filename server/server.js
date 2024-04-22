@@ -105,14 +105,6 @@ app.get('/api/data', (req, res) => {
     });
 });
 
-//used in testing session
-app.get('/api/sessionTest', (req, res) => {
-    console.log("current phrase: ", req.session.phrase);
-    res.json({
-        phrase: req.session.phrase ?? "default"
-    });
-});
-
 app.post('/api/sessionTest', (req, res) => {
     console.log("setting phrase: ", req.body.phrase);
     req.session.phrase = req.body.phrase
