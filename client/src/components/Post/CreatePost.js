@@ -3,7 +3,7 @@ import axiosInstance from "../../modules/axiosInstance";
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
-const CreatePost = () => {
+const CreatePost = (props) => {
     const [user, setUser] = useState({});
     const [Title, setTitle] = useState('');
     const [Body, setBody] = useState('');
@@ -22,22 +22,8 @@ const CreatePost = () => {
     const nav = useNavigate();
 
     useEffect(() => {
-        const fetchUser = async () => {
-            try{
-                const res = await axiosInstance.get("api/getUser");
-                console.log("Setting user: ", res.data);
-                setUser(res.data);
-            }catch(err){
-                console.error('Error fetching user info: ', err);
-            }
-        };
-
-        fetchUser();
-        return () => {
-
-        };
-
-    }, []);
+        setUser(props.user);
+    }, [props.user]);
 
     const handleCreatePost = async (e) => {
         e.preventDefault();

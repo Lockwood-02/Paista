@@ -12,6 +12,7 @@ const Root = () => {
     const fetchData = async () => {
         try {
             const res = await axiosInstance.get("api/getUser");
+            console.log("Root setting user: ", res.data);
             setData(res.data);
         } catch (err) {
             console.error('Error fetching username: ', err);
@@ -90,7 +91,7 @@ const Root = () => {
             {/* Main Content */}
             <div className="w-1/2 p-4 pt-[68px]">
                 <main>
-                    <Outlet />
+                    <Outlet user={data}/>
                 </main>
                 {/* <React.StrictMode>
                     <RouterProvider router={router} />
