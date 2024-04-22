@@ -91,11 +91,6 @@ signup(app)
 const topicSearch = require('./routes/topicSearch.js');
 app.use('/api', topicSearch);
 
-app.get('/api/test', async (req, res) => {
-    const topics = await Topics.findAll();
-    res.json(topics);
-})
-
 // Mount the access router
 app.use('/api', accessRouter);
 
