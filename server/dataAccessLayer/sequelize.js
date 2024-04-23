@@ -34,7 +34,6 @@ const Users = sequelize.define('Users', {
     lastName: DataTypes.STRING
 });
 
-// Define the Topic model
 const Topics = sequelize.define('Topics', {
     id: {
         type: DataTypes.INTEGER,
@@ -56,15 +55,25 @@ const Topics = sequelize.define('Topics', {
             len: [1, 1000] // Ensure description length is between 1 and 1000 characters
         }
     },
-    createdAt: {
+    private: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false // Default value if not provided
+    },
+    closed: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false // Default value if not provided
+    },
+    dateCreated: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: Sequelize.NOW
     },
-    updatedAt: {
-        type: DataTypes.DATE,
+    deleted: {
+        type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: Sequelize.NOW
+        defaultValue: false // Default value if not provided
     }
 });
 
@@ -291,3 +300,6 @@ module.exports = {
     EditHistories,
     Topics
 };
+
+
+

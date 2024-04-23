@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axiosInstance from "../modules/axiosInstance";
 import Topic from "./Topic";
 
@@ -32,7 +33,7 @@ const TopicComponent = () => {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
     const results = topics.filter(topic =>
-      topic.title.toLowerCase().includes(searchTerm.toLowerCase())
+      topic.title.toLowerCase().startsWith(searchTerm.toLowerCase())
     );
     setSearchResults(results);
   };
@@ -50,7 +51,9 @@ const TopicComponent = () => {
       </div>
       <ul className="topic-list">
         {searchResults.map(topic => (
-          <li key={topic.id} className="topic-item">{topic.title}</li>
+          <li key={topic.id} className="topic-item">
+            <Link to={`/topic/${topic.id}`}>{topic.title}</Link>
+          </li>
         ))}
       </ul>
       {/* Render default topics */}
@@ -67,4 +70,4 @@ const TopicComponent = () => {
   );
 };
 
-export default TopicComponent; 
+export default TopicComponent;
