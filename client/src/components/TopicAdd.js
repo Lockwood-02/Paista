@@ -5,10 +5,12 @@ const TopicAdd = ({ onClose, initialData }) => {
   const initialFormData = {
     title: initialData ? initialData.title : '',
     description: initialData ? initialData.description : '',
+    private: initialData ? initialData.private : false, // Initialize the private property with the initial data if available, otherwise set it to false
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [topics, setTopics] = useState([]);
+  // eslint-disable-next-line
+  const [setTopics] = useState([]);
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -25,9 +27,10 @@ const TopicAdd = ({ onClose, initialData }) => {
   }, []);
 
   const handleChange = (e) => {
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value; // Handle checkbox input differently
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: value,
     });
   };
 
@@ -111,6 +114,19 @@ const TopicAdd = ({ onClose, initialData }) => {
               className="border border-gray-300 rounded-md p-2 w-full h-36"
             ></textarea>
           </div>
+          <div className="mb-6">
+            <label htmlFor="private" className="block font-medium mb-1">
+              Private
+            </label>
+            <input
+              type="checkbox" // Use type checkbox for the private property
+              id="private"
+              name="private"
+              checked={formData.private}
+              onChange={handleChange}
+              className="border border-gray-300 rounded-md p-2"
+            />
+          </div>
           <div className="flex justify-between">
             <button type="submit" className="bg-blue-500 text-white px-6 py-2 rounded-md">
               {initialData ? 'Update' : 'Submit'}
@@ -120,17 +136,9 @@ const TopicAdd = ({ onClose, initialData }) => {
             </button>
           </div>
         </form>
-        {/* Render topics */}
-        <div className="mt-4">
-          <h2 className="text-xl font-bold mb-2">Topics</h2>
-          <ul>
-            {topics.map((topic) => (
-              <li key={topic.id}>{topic.title}</li>
-            ))}
-          </ul>
+        
         </div>
       </div>
-    </div>
   ) : null;
 };
 

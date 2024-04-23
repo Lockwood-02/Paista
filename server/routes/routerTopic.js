@@ -1,14 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const { Topics, Users } = require('../dataAccessLayer/sequelize.js');
+const { Op } = require('sequelize');
 
-// GET all topics
+// GET all topics with sorting options
 router.get('/topics', async (req, res) => {
-  if(!req.user){
-    return res.status(401).json({error: "You are not logged in"});
-  }
   try {
-    const topics = await Topics.findAll();
+    // Sorting options
+    const sortBy = req.query.sortBy || 'dateCreated'; // Default sort by dateCreated
+    const sortOrder = req.query.sortOrder || 'DESC'; // Default descending order
+
+    // Fetch topics with sorting
+    const topics = await Topics.findAll({
+      order: [[sortBy, sortOrder]],
+    });
+
     res.json(topics);
   } catch (error) {
     console.error('Error fetching topics:', error);
@@ -18,31 +24,24 @@ router.get('/topics', async (req, res) => {
 
 // POST create a new topic
 router.post('/topics', async (req, res) => {
-  if(!req.user){
-    return res.status(401).json({error: "You are not logged in"});
-  }else if(req.user.userClass < 1){
-    return res.status(401).json({error: "You must be an instructor to create a topic"});
-  }else{
-    try {
-      const { title, description, userID } = req.body;
-  
-      const topicExists = await Topics.findOne({
-        where:{
-          title: title
-        }
-      })
-  
-      if(topicExists){
-        res.json({error:"topic name is already in use"})
-      }else{
-        const newTopic = await Topics.create({ title, description, userID });
-        res.status(201).json(newTopic);
+  try {
+    const { title, description, userID, private, closed, dateCreated, deleted } = req.body;
+
+    const topicExists = await Topics.findOne({
+      where: {
+        title: title
       }
-  
-    } catch (error) {
-      console.error('Error creating topic:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    });
+
+    if (topicExists) {
+      return res.status(400).json({ error: "Topic name is already in use" });
     }
+
+    const newTopic = await Topics.create({ title, description, userID, private, closed, dateCreated, deleted });
+    res.status(201).json(newTopic);
+  } catch (error) {
+    console.error('Error creating topic:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -63,17 +62,14 @@ router.get('/topics/:id', async (req, res) => {
 
 // PUT update an existing topic by ID
 router.put('/topics/:id', async (req, res) => {
-  if(!req.user){
-    return res.status(401).json({error: "You are not logged in"});
-  }
   try {
     const { id } = req.params;
-    const { title, description } = req.body;
+    const { title, description, private, closed, dateCreated, deleted } = req.body;
     const topic = await Topics.findByPk(id);
     if (!topic) {
       return res.status(404).json({ error: 'Topic not found' });
     }
-    await topic.update({ title, description });
+    await topic.update({ title, description, private, closed, dateCreated, deleted });
     res.json(topic);
   } catch (error) {
     console.error('Error updating topic:', error);
@@ -85,18 +81,13 @@ router.put('/topics/:id', async (req, res) => {
 router.delete('/topics/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("deleting topic with ID: ", id);
+    console.log("Deleting topic with ID:", id);
     const topic = await Topics.findByPk(id);
     if (!topic) {
-      res.status(404).json({ error: 'Topic not found' });
-    }else{
-      await Topics.destroy({
-        where:{
-          id:id
-        }
-      });
-      res.status(204).json({success:"Topic destroyed"});
+      return res.status(404).json({ error: 'Topic not found' });
     }
+    await topic.destroy();
+    res.status(204).json({ success: 'Topic deleted successfully' });
   } catch (error) {
     console.error('Error deleting topic:', error);
     res.status(500).json({ error: 'Internal Server Error' });
