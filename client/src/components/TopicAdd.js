@@ -38,16 +38,17 @@ const TopicAdd = ({ onClose, initialData }) => {
         // Check if both title and description are empty
         throw new Error('Title and description cannot be empty');
       }
-      
+
       if (initialData) {
         await updateTopic(formData);
       } else {
         await createTopic(formData);
       }
-      
+
       // Reset the form data
       setFormData(initialFormData);
       onClose(); // Close the form after successful submission
+      window.location.reload();
     } catch (error) {
       console.error('Error creating/updating topic:', error);
       // Handle error

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../modules/axiosInstance";
+import Topic from "./Topic";
 
 const getAllTopics = async () => {
   try {
@@ -52,6 +53,16 @@ const TopicComponent = () => {
           <li key={topic.id} className="topic-item">{topic.title}</li>
         ))}
       </ul>
+      {/* Render default topics */}
+      <div className="mt-4">
+        <h2 className="text-xl font-bold mb-2">Topics</h2>
+        <ul>
+          {topics.map((topic, index) => (
+            <Topic key={index} title={topic.title} description={topic.description} createdAt={topic.createdAt} />
+            // <li key={topic.id}>{topic.title}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
