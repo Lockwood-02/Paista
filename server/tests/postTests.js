@@ -112,94 +112,133 @@ suite('Post router tests', function(){
     })
 
     test('Create valid post', (done) => {
-        chai.request(server)
-        .post('/api/Posts')
-        .send(testPosts[0])
-        .end(async function(err,res){
-            assert.equal(res.status,201);
-            assert.include(res.body, testPosts[0]);
-
-            dbPost = await Posts.findByPk(res.body.ID);
-
-            assert.include(dbPost, testPosts[0]);
-            testPosts[0].ID = dbPost.ID;
-            done();
-        })
+        let agent = chai.request.agent(server)
+        agent.post('/api/login')
+        .send({
+            username: testUser.username,
+            password: testUser.password
+        }).end((err,res) => {
+            assert.equal(res.status, 200, "Agent failed to login")
+            agent.post('/api/Posts')
+            .send(testPosts[0])
+            .end(async function(err,res){
+                assert.equal(res.status,201);
+                assert.include(res.body, testPosts[0]);
+    
+                dbPost = await Posts.findByPk(res.body.ID);
+    
+                assert.include(dbPost, testPosts[0]);
+                testPosts[0].ID = dbPost.ID;
+                done();
+            })
+        })  
     })
 
     test('Create post with invalid type', (done) => {
-        chai.request(server)
-        .post('/api/Posts')
-        .send(testPosts[2])
-        .end(function(err,res){
-            assert.equal(res.status,500);
-            assert.deepEqual(res.body, {error: "attempted to create post with invalid type"})
-            done();
-        })
+        let agent = chai.request.agent(server)
+        agent.post('/api/login')
+        .send({
+            username: testUser.username,
+            password: testUser.password
+        }).end((err,res) => {
+            agent.post('/api/Posts')
+            .send(testPosts[2])
+            .end(function(err,res){
+                assert.equal(res.status,500);
+                assert.deepEqual(res.body, {error: "attempted to create post with invalid type"})
+                done();
+            })
+        });  
     })
 
     test('Create post with null creator id', (done) => {
-
         testPosts[3].Creator_ID = null;
-
-        chai.request(server)
-        .post('/api/Posts')
-        .send(testPosts[3])
-        .end(function(err,res){
-            assert.equal(res.status,500);
-            done();
+        let agent = chai.request.agent(server)
+        agent.post('/api/login')
+        .send({
+            username: testUser.username,
+            password: testUser.password
+        }).end((err,res) => {
+            agent.post('/api/Posts')
+            .send(testPosts[3])
+            .end(function(err,res){
+                assert.equal(res.status,500);
+                done();
+            })
         })
     })
 
     test('Create post with null topic id', (done) => {
-
         testPosts[4].Topic_ID = null;
-
-        chai.request(server)
-        .post('/api/Posts')
-        .send(testPosts[4])
-        .end(function(err,res){
-            assert.equal(res.status,500);
-            done();
+        let agent = chai.request.agent(server)
+        agent.post('/api/login')
+        .send({
+            username: testUser.username,
+            password: testUser.password
+        }).end((err,res) => {
+            agent.post('/api/Posts')
+            .send(testPosts[4])
+            .end(function(err,res){
+                assert.equal(res.status,500);
+                done();
+            })
         })
     })
 
     test('Create a post with a thread ID', (done) => {
         testPosts[1].Thread_ID = testPosts[0].ID;
-        chai.request(server)
-        .post('/api/Posts')
-        .send(testPosts[1])
-        .end(async function(err,res){
-            assert.equal(res.status,201);
-            assert.include(res.body, testPosts[1]);
-
-            dbPost = await Posts.findByPk(res.body.ID);
-
-            assert.include(dbPost, testPosts[1]);
-            testPosts[1].ID = dbPost.ID;
-            done();
-        })
+        let agent = chai.request.agent(server)
+        agent.post('/api/login')
+        .send({
+            username: testUser.username,
+            password: testUser.password
+        }).end((err,res) => {
+            agent.post('/api/Posts')
+            .send(testPosts[1])
+            .end(async function(err,res){
+                assert.equal(res.status,201);
+                assert.include(res.body, testPosts[1]);
+    
+                dbPost = await Posts.findByPk(res.body.ID);
+    
+                assert.include(dbPost, testPosts[1]);
+                testPosts[1].ID = dbPost.ID;
+                done();
+            })
+        }) 
     })
 
     test('Get posts', (done) => {
-        chai.request(server)
-        .get('/api/Posts')
-        .end((err,res) =>{
-            assert.equal(res.status,200);
-            assert.include(res.body[0], testPosts[0]);
-            assert.include(res.body[1], testPosts[1]);
-            done();
-        })
+        let agent = chai.request.agent(server)
+        agent.post('/api/login')
+        .send({
+            username: testUser.username,
+            password: testUser.password
+        }).end((err,res) => {
+            agent.get('/api/Posts')
+            .end((err,res) =>{
+                assert.equal(res.status,200);
+                assert.include(res.body[0], testPosts[0]);
+                assert.include(res.body[1], testPosts[1]);
+                done();
+            })
+        }) 
     })
 
     test('Get post by id', (done) => {
-        chai.request(server)
-        .get('/api/Posts/' + testPosts[1].ID)
-        .end((err,res) =>{
-            assert.equal(res.status,200);
-            assert.include(res.body, testPosts[1]);
-            done();
-        })
+        let agent = chai.request.agent(server)
+        agent.post('/api/login')
+        .send({
+            username: testUser.username,
+            password: testUser.password
+        }).end((err,res) => {
+            agent.get('/api/Posts/' + testPosts[1].ID)
+            .end((err,res) =>{
+                assert.equal(res.status,200);
+                assert.include(res.body, testPosts[1]);
+                done();
+            })
+		})  
     })
 
     test('Update title', (done) => {
