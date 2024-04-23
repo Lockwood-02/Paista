@@ -64,7 +64,7 @@ module.exports = function(app){
             const validSignup = await signupIsValid(req.body)
             if(validSignup.error){
                 console.log("Could not create user: ", username);
-                res.json(validSignup);
+                return res.status(500).json(validSignup);
             }else{
                 // Hash the password
                 const hashedPassword = await bcrypt.hash(password, 10);
