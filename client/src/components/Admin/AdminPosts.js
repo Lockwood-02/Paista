@@ -3,7 +3,7 @@ import axiosInstance from "../../modules/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 
-const AdminPosts = () => {
+const AdminPosts = (props) => {
     const [data, setData] = useState({});
 
     //redirect
@@ -13,18 +13,17 @@ const AdminPosts = () => {
 
     useEffect( () => {
         const fetchUser = async () => {
-            try{
-                const res = await axiosInstance.get("api/getUser");
-                //need to know if user is class 2 or not
-                const userData = await axiosInstance.get("api/users/" + res.data.id);
-                if(userData.data.userClass != 2){
-                    //if the user is not an admin send them to the home page
+                try{
+                    //need to know if user is class 2 or not
+                    const userData = await axiosInstance.get("api/users/" + props.user.id);
+                    if(userData.data.userClass != 2){
+                        //if the user is not an admin send them to the home page
+                        nav("/");
+                    }
+                }catch(err){
+                    console.error('Error fetching user info: ', err);
                     nav("/");
                 }
-            }catch(err){
-                console.error('Error fetching user info: ', err);
-                nav("/");
-            }
         };
 
         const fetchData = async () => {
@@ -38,13 +37,15 @@ const AdminPosts = () => {
             }
         }
 
-        fetchUser();
-        fetchData();
-
+        if(props.user.id){
+            fetchUser();
+            fetchData();
+        }
+        
         return () => {
 
         };
-    },[])
+    },[props.user])
 
     function handleDelete(deleteStatus){
         let dataCopy = { ...data }

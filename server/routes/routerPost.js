@@ -5,6 +5,9 @@ const { Op } = require('sequelize');
 
 // GET all posts
 router.get('/Posts', async (req, res) => {
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }
   try {
     const posts = await Posts.findAll();
     res.json(posts);
@@ -16,6 +19,9 @@ router.get('/Posts', async (req, res) => {
 
 // GET all posts in a thread
 router.get("/getThread/:Thread_ID", async (req, res) => {
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }
   try{
     const { Thread_ID } = req.params;
     const comments = await Posts.findAll({
@@ -50,25 +56,34 @@ router.get("/getThread/:Thread_ID", async (req, res) => {
 
 //GET 20 posts with a title matching a given string
 router.get('/admin/posts/:search', async (req,res) => {
-  try{
-    const { search } = req.params;
-    const posts = await Posts.findAll({
-      where:{
-        Title:{
-            [Op.startsWith]:search
-        }
-      },
-      limit:20
-    })
-    res.json(posts);
-  }catch (error) {
-    console.error('Error searching for posts for the admin:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+  if(!req.user){
+    return res.status(401).json({error: "you are not logged in"});
+  }else if(req.user.userClass !== 2){
+    return res.status(401).json({error: "Admin only"});
+  }else{
+    try{
+      const { search } = req.params;
+      const posts = await Posts.findAll({
+        where:{
+          Title:{
+              [Op.startsWith]:search
+          }
+        },
+        limit:20
+      })
+      res.json(posts);
+    }catch (error) {
+      console.error('Error searching for posts for the admin:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   }
 })
 
 // POST create a new post
 router.post('/Posts', async (req, res) => {
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }
   try {
     const { Creator_ID, Thread_ID, Topic_ID, Solution_ID, Title, Body, Deleted, Anonymous, Type } = req.body;
     if(['Announcement', 'Resolved', 'Unresolved'].indexOf(Type) < 0){
@@ -85,6 +100,9 @@ router.post('/Posts', async (req, res) => {
 
 // GET a single post by ID
 router.get('/Posts/:id', async (req, res) => {
+  if(!req.user){
+    return res.status(401).json({error: "You are not logged in"});
+  }
   try {
     const { id } = req.params;
     const post = await Posts.findByPk(id);

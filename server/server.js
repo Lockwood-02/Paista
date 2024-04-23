@@ -91,11 +91,6 @@ signup(app)
 const topicSearch = require('./routes/topicSearch.js');
 app.use('/api', topicSearch);
 
-app.get('/api/test', async (req, res) => {
-    const topics = await Topics.findAll();
-    res.json(topics);
-})
-
 // Mount the access router
 app.use('/api', accessRouter);
 
@@ -107,14 +102,6 @@ app.get('/api/data', (req, res) => {
             return;
         }
         res.json(rows);
-    });
-});
-
-//used in testing session
-app.get('/api/sessionTest', (req, res) => {
-    console.log("current phrase: ", req.session.phrase);
-    res.json({
-        phrase: req.session.phrase ?? "default"
     });
 });
 

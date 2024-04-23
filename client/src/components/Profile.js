@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from "../modules/axiosInstance";
 import { useParams } from 'react-router-dom';
 
-const Profile = () => {
+const Profile = (props) => {
     const [data, setData] = useState({})
     const [edit, setEdit] = useState(false)
     const { dataId } = useParams();
@@ -11,8 +11,7 @@ const Profile = () => {
 
     const fetchUser = async () => {
         try{
-            const res = await axiosInstance.get("api/getUser");
-            setUser(res.data);
+            setUser(props.user);
             const userData = await axiosInstance.get("api/users/" + dataId);
             setData(userData.data);
         }catch(err){
@@ -21,13 +20,13 @@ const Profile = () => {
     };
 
     useEffect( () => {
-    
+        
         fetchUser();
 
         return () => {
 
         };
-    },[])
+    },[props.user])
 
     const handleFirstName = (e) => {
         let dataCopy = { ...data }

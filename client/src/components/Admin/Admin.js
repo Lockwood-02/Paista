@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from "../../modules/axiosInstance";
 import { useNavigate } from "react-router-dom";
 
-const Admin = () => {
+const Admin = (props) => {
     const [user, setUser] = useState({});
     const [userSearch, setUserSearch] = useState('');
     const [postSearch, setPostSearch] = useState('');
@@ -15,18 +15,20 @@ const Admin = () => {
 
     useEffect( () => {
         const fetchUser = async () => {
-            try{
-                const res = await axiosInstance.get("api/getUser");
-                //need to know if user is class 2 or not
-                const userData = await axiosInstance.get("api/users/" + res.data.id);
-                setUser(userData.data);
-                if(userData.data.userClass != 2){
-                    //if the user is not an admin send them to the home page
+            if(props.user.id){
+                try{
+                    console.log("Checking admin based on:", props.user);
+                    //need to know if user is class 2 or not
+                    const userData = await axiosInstance.get("api/users/" + props.user.id);
+                    setUser(userData.data);
+                    if(userData.data.userClass != 2){
+                        //if the user is not an admin send them to the home page
+                        nav("/");
+                    }
+                }catch(err){
+                    console.error('Error fetching user info: ', err);
                     nav("/");
                 }
-            }catch(err){
-                console.error('Error fetching user info: ', err);
-                nav("/");
             }
         };
 
@@ -35,7 +37,7 @@ const Admin = () => {
         return () => {
 
         };
-    },[])
+    },[props.user])
 
     const handleUserSearch = async (e) => {
         setUserSearch(e.target.value);

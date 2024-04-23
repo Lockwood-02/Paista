@@ -3,7 +3,7 @@ import axiosInstance from "../../modules/axiosInstance";
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
-const ViewPost = () => {
+const ViewPost = (props) => {
     const [user, setUser] = useState({});
     const [Topic_ID, setTopic_ID] = useState(null);
     const [Solution_ID, setSolution_ID] = useState(null);
@@ -67,16 +67,11 @@ const ViewPost = () => {
         }
     }
 
+    useEffect(() => {
+        setUser(props.user);
+    }, [props.user]);
+
     useEffect( () => {
-        const fetchUser = async () => {
-            try{
-                const res = await axiosInstance.get("api/getUser");
-                console.log("Setting user: ", res.data);
-                setUser(res.data);
-            }catch(err){
-                console.error('Error fetching user info: ', err);
-            }
-        };
 
         const fetchPost = async () => {
             try{
@@ -108,7 +103,6 @@ const ViewPost = () => {
             }
         };
 
-        fetchUser();
         fetchPost();
         if(!Thread_ID){
             fetchComments();

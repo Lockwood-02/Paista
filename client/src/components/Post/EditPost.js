@@ -3,7 +3,7 @@ import axiosInstance from "../../modules/axiosInstance";
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
-const EditPost =() => {
+const EditPost = (props) => {
     const [user, setUser] = useState({});
     const [Creator_ID, setCreator_ID] = useState(null);
     const [Thread_ID, setThread_ID] = useState(null);
@@ -26,17 +26,11 @@ const EditPost =() => {
     //redirect
     const nav = useNavigate();
 
-    useEffect( () => {
-        const fetchUser = async () => {
-            try{
-                const res = await axiosInstance.get("api/getUser");
-                console.log("Setting user: ", res.data);
-                setUser(res.data);
-            }catch(err){
-                console.error('Error fetching user info: ', err);
-            }
-        };
+    useEffect(() => {
+        setUser(props.user);
+    }, [props.user]);
 
+    useEffect( () => {
         const fetchPost = async () => {
             try{
                 const res = await axiosInstance.get("api/Posts/" + Post_ID);
@@ -59,7 +53,6 @@ const EditPost =() => {
             }
         };
 
-        fetchUser();
         fetchPost();
 
         setLoading(false);

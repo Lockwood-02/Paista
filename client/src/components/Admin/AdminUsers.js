@@ -3,7 +3,7 @@ import axiosInstance from "../../modules/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 
-const AdminUsers = () => {
+const AdminUsers = (props) => {
     const [data, setData] = useState({});
 
     //redirect
@@ -14,9 +14,8 @@ const AdminUsers = () => {
     useEffect( () => {
         const fetchUser = async () => {
             try{
-                const res = await axiosInstance.get("api/getUser");
                 //need to know if user is class 2 or not
-                const userData = await axiosInstance.get("api/users/" + res.data.id);
+                const userData = await axiosInstance.get("api/users/" + props.user.id);
                 if(userData.data.userClass != 2){
                     //if the user is not an admin send them to the home page
                     nav("/");
@@ -38,13 +37,15 @@ const AdminUsers = () => {
             }
         }
 
-        fetchUser();
-        fetchData();
+        if(props.user.id){
+            fetchUser();
+            fetchData();
+        }
 
         return () => {
 
         };
-    },[])
+    },[props.user])
 
     function handleBan(banStatus){
         let dataCopy = { ...data }
