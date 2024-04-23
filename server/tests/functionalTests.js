@@ -186,7 +186,7 @@ suite('Functional Tests', function() {
 
             await browser.pressButton('button#signupButton');
             browser.assert.success('button press failed')
-            browser.assert.url("http://localhost:3000/login")
+            browser.assert.url("http://localhost:3000/")
             //check to ensure user is added to database
             const db = await Users.findOne({
                 where:{
