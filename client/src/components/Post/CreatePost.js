@@ -13,12 +13,14 @@ const CreatePost = (props) => {
 
     // Get the Topic_ID from the URL using useParams
     const { Topic_ID } = useParams();
+    const { Thread_ID} = useParams();
 
     //redirect
     const nav = useNavigate();
 
     useEffect(() => {
-        setUser(props.user);
+        setUser(props.user); // User is undefined?
+        console.log("Username:", props.user);
     }, [props.user]);
 
     const handleCreatePost = async (e) => {

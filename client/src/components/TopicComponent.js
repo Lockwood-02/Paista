@@ -64,7 +64,6 @@ const TopicComponent = () => {
             <Link to={`/topics/${topic.id}`}>
               <Topic key={index} title={topic.title} description={topic.description} createdAt={topic.createdAt} />
             </Link>
-            // <li key={topic.id}>{topic.title}</li>
           ))}
         </ul>
       </div>

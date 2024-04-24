@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from "../modules/axiosInstance";
 import CreatePost from './Post/CreatePost';
+import { Link } from 'react-router-dom';
 
-const TopicDetailPage = () => {
+const TopicDetailPage = (props) => {
   const { Topic_ID } = useParams();
   const [topic, setTopic] = useState(null);
+  const [post, setPost] = useState(null);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
 
   useEffect(() => {
@@ -25,6 +27,23 @@ const TopicDetailPage = () => {
     };
   }, [Topic_ID]);
 
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const res = await axiosInstance.get("api/Posts/"); // Assuming your backend API endpoint is '/api/topic/:topicId'
+        setPost(res.data);
+      } catch (error) {
+        console.error('Error fetching topic:', error);
+      }
+    };
+
+    fetchPost();
+
+    return () => {
+      // Cleanup
+    };
+  }, []);
+
   const handleCreatePostToggle = () => {
     setIsCreatePostOpen(!isCreatePostOpen); // Toggle the state to open/close the CreatePost component
   };
@@ -35,6 +54,10 @@ const TopicDetailPage = () => {
     return date.toLocaleDateString('en-US', options);
 }
 
+
+if (!post) {
+    return <div>Loading...</div>;
+} else {
   return (
     <div className=''>
       {topic && (
@@ -48,12 +71,24 @@ const TopicDetailPage = () => {
         </div>
       )}
 
-<button onClick={handleCreatePostToggle}>Create Post</button>
+    <button onClick={handleCreatePostToggle}>Create Post</button>
 
-{/* Conditionally render the CreatePost component */}
-{isCreatePostOpen && <CreatePost />}
+    {post.map(com => (
+        <Link to={`/viewPost?Post_ID=${com.ID}`}>
+        <div className="bg-white p-4 mb-4 rounded shadow">
+            <p className="text-sm font-semibold">{com.username}</p>
+            <p>{com.Body}</p>
+            <p className="text-xs">-{formatDate(com.updatedAt)}</p>
+        </div>
+        </Link>
+    ))
+    }
+
+    {/* Conditionally render the CreatePost component */}
+    {isCreatePostOpen && <CreatePost user={props.user}/>}
     </div>
   );
+};
 };
 
 export default TopicDetailPage;
