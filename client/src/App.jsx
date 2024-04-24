@@ -17,6 +17,7 @@ import Admin from './components/Admin/Admin';
 import AdminUsers from './components/Admin/AdminUsers';
 import AdminPosts from './components/Admin/AdminPosts';
 import Profile from './components/Profile';
+import TopicPage from './components/TopicPage';
 
 
 function App() {
@@ -39,6 +40,7 @@ useEffect(() => {
     };
 
   }, []);
+  
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -54,6 +56,7 @@ useEffect(() => {
                 <Route path='createPost' element={<CreatePost user={user}/>} />
                 <Route path='editPost' element={<EditPost user={user}/>} />
                 <Route path='topics' element={<TopicAdd />} />
+                <Route path='topics/:topicId' element={<TopicPage />}/>
                 <Route path='viewPost' element={<ViewPost user={user}/>} />
                 <Route path='TopicComponent' element={<TopicComponent />} />
                 <Route path='Admin' element={<Admin user={user}/>} />
@@ -61,6 +64,7 @@ useEffect(() => {
                 <Route path='Admin/posts/:dataId' element={<AdminPosts user={user}/>} />
                 <Route path='profile/:dataId' element={<Profile user={user}/>} />
               </Route>
+              
             </Routes>
         </>
       )}

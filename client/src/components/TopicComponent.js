@@ -52,16 +52,18 @@ const TopicComponent = () => {
       <ul className="topic-list">
         {searchResults.map(topic => (
           <li key={topic.id} className="topic-item">
-            <Link to={`/topic/${topic.id}`}>{topic.title}</Link>
+            <Link to={`/topics/${topic.id}`}>{topic.title}</Link>
           </li>
         ))}
       </ul>
       {/* Render default topics */}
       <div className="mt-4">
         <h2 className="text-xl font-bold mb-2">Topics</h2>
-        <ul>
+        <ul className="cursor-pointer">
           {topics.map((topic, index) => (
-            <Topic key={index} title={topic.title} description={topic.description} createdAt={topic.createdAt} />
+            <Link to={`/topics/${topic.id}`}>
+              <Topic key={index} title={topic.title} description={topic.description} createdAt={topic.createdAt} />
+            </Link>
             // <li key={topic.id}>{topic.title}</li>
           ))}
         </ul>
