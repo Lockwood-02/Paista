@@ -103,7 +103,7 @@ suite('User Signup Unit Tests', function() {
             .post('/api/signup')
             .send(user)
             .end(function(err,res){
-                assert.equal(res.status, 500);
+                assert.equal(res.status, 200);
                 assert.deepEqual({error:'username is taken'}, res.body);
                 done();
             });
@@ -115,7 +115,7 @@ suite('User Signup Unit Tests', function() {
             .post('/api/signup')
             .send(user)
             .end(function(err,res){
-                assert.equal(res.status, 500);
+                assert.equal(res.status, 200);
                 assert.deepEqual({error:'email address is taken'}, res.body);
                 done();
             });
@@ -127,7 +127,7 @@ suite('User Signup Unit Tests', function() {
             .post('/api/signup')
             .send(user)
             .end(async function(err,res){
-                assert.equal(res.status, 500);
+                assert.equal(res.status, 200);
                 assert.deepEqual({error:"username uses invalid characters"}, res.body);
 
                 //ensure no username in the database
@@ -148,7 +148,7 @@ suite('User Signup Unit Tests', function() {
             .post('/api/signup')
             .send(user)
             .end(async function(err,res){
-                assert.equal(res.status, 500);
+                assert.equal(res.status, 200);
                 assert.deepEqual({error: "username is too short"}, res.body);
                 dbUser = await Users.findOne({
                     where:{
@@ -166,7 +166,7 @@ suite('User Signup Unit Tests', function() {
             .post('/api/signup')
             .send(user)
             .end(function(err,res){
-                assert.equal(res.status, 500);
+                assert.equal(res.status, 200);
                 assert.deepEqual({error: 'Password must be at least 8 characters including a number, upper letter, lower case letter, and at least one special character: !@#$%^&*()'}, res.body);
                 done();
             })
@@ -178,7 +178,7 @@ suite('User Signup Unit Tests', function() {
             .post('/api/signup')
             .send(user)
             .end(function(err,res){
-                assert.equal(res.status, 500);
+                assert.equal(res.status, 200);
                 assert.deepEqual({error: "email address is invalid"}, res.body);
                 done();
             })
