@@ -50,7 +50,7 @@ const Signup = () => {
             }
         } catch (err){
             console.error('Error signing up user: ', err);
-            setMessage(err.error);
+            setMessage(err.message);
         }
     }
 
