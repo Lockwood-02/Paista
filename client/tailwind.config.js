@@ -7,7 +7,7 @@ module.exports = {
         header: ['Montserrat']
       },
       colors: {
-        back: "#D9D9D9"
+        back: "#ababab"
       }
     },
   },
