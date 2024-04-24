@@ -24,18 +24,30 @@ let testTopics = [
     {
         title:"CS445G", //0
         description:"Operating Systems - Graduate",
+        private: false,
+        closed: false,
+        deleted: false
     },
     {
         title:"CS560", //1
-        description:"Software Engineering", 
+        description:"Software Engineering",
+        private: false,
+        closed: false,
+        deleted: false
     },
     {
         title:"CS560: Software Engineering",//2
         description:"Software Engineering", 
+        private: false,
+        closed: false,
+        deleted: false
     },
     {
         title:"CS560: Software Engineering",//3
         description:"with Dr.Xing!", 
+        private: false,
+        closed: false,
+        deleted: false
     }
 ]
 
@@ -136,7 +148,8 @@ suite('Topic router tests', function(){
     })
 
     test('Create a topic with a name that already exists', function(done){
-        let testTopic = testTopics[1]
+        let {title, description, userID, private, closed, deleted} = testTopics[1]
+        let testTopic = {title, description, userID, private, closed, deleted}
         let agent = chai.request.agent(server)
         agent.post('/api/login')
         .send({
@@ -147,7 +160,7 @@ suite('Topic router tests', function(){
             agent.post('/api/topics')
             .send(testTopic)
             .end(async function(err,res){
-                assert.deepEqual({error:"topic name is already in use"}, res.body);
+                assert.deepEqual(res.body, {error:"Topic name is already in use"});
                 done();
             })
         })     
@@ -163,8 +176,9 @@ suite('Topic router tests', function(){
 			assert.equal(res.status, 200);
 			agent.get('/api/topics')
             .end(function(err,res){
-                assert.deepInclude(res.body[0],testTopics[0]);
-                assert.deepInclude(res.body[1],testTopics[1]);
+                console.log("Res: ", res.body, "title: ", testTopics[0]);
+                assert.deepInclude(res.body[1],testTopics[0]);
+                assert.deepInclude(res.body[0],testTopics[1]);
                 done();
             })
 		})
