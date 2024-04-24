@@ -52,12 +52,11 @@ const HomePage = () => {
                 <div className="mb-4">
                     <h1 className="text-4xl font-medium font-header">Home</h1>
                 </div>
-                <div>
+                <div className=''>
                     {/* Render topics using the TopicComponent */}
                     <TopicComponent />
                 </div>
             </div>
-
         </div>
     );
 };
