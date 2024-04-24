@@ -60,33 +60,34 @@ if (!post) {
 } else {
   return (
     <div className=''>
-      {topic && (
+    {topic && (
         <div>
-            <div className="flex items-center">
+            <div className="flex items-center mb-4">
                 <h1 className="text-2xl font-bold flex-grow">{topic.title}</h1>
                 <p className="text-md text-gray-400">{formatDate(topic.createdAt)}</p>
             </div>
             <hr className="my-2 border-gray-300"/>
             <p className="text-xl text-gray-600">{topic.description}</p>
         </div>
-      )}
+    )}
 
-    <button onClick={handleCreatePostToggle}>Create Post</button>
+    {/* Create Post Button */}
+    <button onClick={handleCreatePostToggle} className="bg-blue-500 text-white py-2 px-4 rounded mt-24 mb-4">Create Post</button>
 
+    {/* Posts */}
     {post.map(com => (
-        <Link to={`/viewPost?Post_ID=${com.ID}`}>
-        <div className="bg-white p-4 mb-4 rounded shadow">
-            <p className="text-sm font-semibold">{com.username}</p>
-            <p>{com.Body}</p>
-            <p className="text-xs">-{formatDate(com.updatedAt)}</p>
-        </div>
+        <Link to={`/viewPost?Post_ID=${com.ID}`} key={com.ID}>
+            <div className="bg-white p-4 mb-4 rounded shadow">
+                <p className="text-sm font-semibold">{com.username}</p>
+                <p>{com.Title}</p>
+                <p className="text-xs">-{formatDate(com.updatedAt)}</p>
+            </div>
         </Link>
-    ))
-    }
+    ))}
 
     {/* Conditionally render the CreatePost component */}
     {isCreatePostOpen && <CreatePost user={props.user}/>}
-    </div>
+</div>
   );
 };
 };
