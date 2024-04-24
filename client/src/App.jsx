@@ -56,7 +56,7 @@ useEffect(() => {
                 <Route path='createPost' element={<CreatePost user={user}/>} />
                 <Route path='editPost' element={<EditPost user={user}/>} />
                 <Route path='topics' element={<TopicAdd />} />
-                <Route path='topics/:topicId' element={<TopicPage />}/>
+                <Route path='topics/:Topic_ID' element={<TopicPage />}/>
                 <Route path='viewPost' element={<ViewPost user={user}/>} />
                 <Route path='TopicComponent' element={<TopicComponent />} />
                 <Route path='Admin' element={<Admin user={user}/>} />

@@ -4,14 +4,14 @@ import axiosInstance from "../modules/axiosInstance";
 import CreatePost from './Post/CreatePost';
 
 const TopicDetailPage = () => {
-  const { topicId } = useParams();
+  const { Topic_ID } = useParams();
   const [topic, setTopic] = useState(null);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
 
   useEffect(() => {
     const fetchTopic = async () => {
       try {
-        const res = await axiosInstance.get(`api/topics/${topicId}`); // Assuming your backend API endpoint is '/api/topic/:topicId'
+        const res = await axiosInstance.get(`api/topics/${Topic_ID}`); // Assuming your backend API endpoint is '/api/topic/:topicId'
         setTopic(res.data);
       } catch (error) {
         console.error('Error fetching topic:', error);
@@ -23,7 +23,7 @@ const TopicDetailPage = () => {
     return () => {
       // Cleanup
     };
-  }, [topicId]);
+  }, [Topic_ID]);
 
   const handleCreatePostToggle = () => {
     setIsCreatePostOpen(!isCreatePostOpen); // Toggle the state to open/close the CreatePost component

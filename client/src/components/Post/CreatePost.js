@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from "../../modules/axiosInstance";
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
 const CreatePost = (props) => {
@@ -11,12 +11,8 @@ const CreatePost = (props) => {
     const [Type, setType] = useState('Unresolved');
     const [message, setMessage] = useState('');
 
-    //get query params to determine topic and thread ids
-    const location = useLocation();
-    const query = new URLSearchParams(location.search);
-
-    const Thread_ID = query.get('Thread_ID');
-    const Topic_ID = query.get("Topic_ID");
+    // Get the Topic_ID from the URL using useParams
+    const { Topic_ID } = useParams();
 
     //redirect
     const nav = useNavigate();
@@ -30,15 +26,14 @@ const CreatePost = (props) => {
         //client side validation of form
         if(['Announcement', 'Resolved', 'Unresolved'].indexOf(Type) < 0){
             setMessage("Error: Invalid post type. Refresh page and try again");
-        }else if(!Topic_ID || !user.id){
-
+        } else if(!Topic_ID || !user.id){
             setMessage("Error: Could not post. Refresh page and try again");
-        }else{
-            try{
+        } else {
+            try {
                 const res = await axiosInstance.post("api/Posts", {
                     Creator_ID:user.id,
-                    Thread_ID:Thread_ID,
-                    Topic_ID:Topic_ID,
+                    Thread_ID: null, // Adjust Thread_ID based on your logic
+                    Topic_ID: Topic_ID,
                     Solution_ID:null,
                     Title:Title,
                     Body:Body,
@@ -48,12 +43,11 @@ const CreatePost = (props) => {
                 });
                 console.log("Axios response: ", res);//debugging
                 nav("/viewPost?Post_ID=" + res.data.ID);
-            }catch(err){
+            } catch(err) {
                 console.error("Error submitting post");
                 setMessage("Error: Could not post. Refresh page and try again");
             }
         }
-
     }
 
     const handleAnonymousChange = (e) => {
