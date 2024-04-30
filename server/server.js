@@ -23,6 +23,8 @@ const editVoteRouter = require('../server/routes/routerVote.js');
 
 const app = express();
 const port = process.env.PORT || 5000;
+const client_url = process.env.CLIENT || "http://localhost:3000";
+
 
 //testing
 require('dotenv').config();
@@ -50,7 +52,7 @@ app.use(function (req, res, next) {
 
 
 //allows client communication
-app.use(cors({ origin: "http://localhost:3000" })); //can be changed based on env variable
+app.use(cors({ origin: client_url })); //can be changed based on env variable
 
 //parsing incoming data for easier reading
 // Set up body-parser middleware

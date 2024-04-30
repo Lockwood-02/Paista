@@ -1,7 +1,9 @@
 require('dotenv').config();
 
+const database_str = process.env.DATABASE || 'database.sqlite'
+
 //initialize obj
-let storageStr = process.env.NODE_ENV == 'test' ? 'test.sqlite' : 'database.sqlite';
+let storageStr = process.env.NODE_ENV == 'test' ? 'test.sqlite' : database_str;
 // Establish a connection to the database
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize({
