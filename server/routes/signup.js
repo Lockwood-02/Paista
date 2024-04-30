@@ -32,7 +32,8 @@ module.exports = function(app){
             try{
                 const user = await Users.findOne({
                     where:{
-                        username:username
+                        username:username,
+                        banned: false
                     }
                 })
 
@@ -76,6 +77,7 @@ module.exports = function(app){
                     hashedPassword: hashedPassword,
                     email,
                     userClass: 0,
+                    banned:false,
                     firstName,
                     lastName
                 });

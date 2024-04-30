@@ -9,7 +9,9 @@ router.get('/Posts', async (req, res) => {
     return res.status(401).json({error: "You are not logged in"});
   }
   try {
-    const posts = await Posts.findAll();
+    const posts = await Posts.findAll({where:{
+      Deleted: false
+    }});
     res.json(posts);
   } catch (error) {
     console.error('Error fetching posts:', error);
@@ -26,7 +28,8 @@ router.get("/getThread/:Thread_ID", async (req, res) => {
     const { Thread_ID } = req.params;
     const comments = await Posts.findAll({
       where:{
-        Thread_ID:Thread_ID
+        Thread_ID:Thread_ID,
+        Deleted:false
       }
     })
     let userIds = []
@@ -67,7 +70,8 @@ router.get('/admin/posts/:search', async (req,res) => {
         where:{
           Title:{
               [Op.startsWith]:search
-          }
+          },
+          Deleted:false
         },
         limit:20
       })
@@ -105,11 +109,16 @@ router.get('/Posts/:id', async (req, res) => {
   }
   try {
     const { id } = req.params;
-    const post = await Posts.findByPk(id);
+    const post = await Posts.findAll({
+      where:{
+        ID: id,
+        Deleted:false
+      }
+    });
     if (!post) {
       return res.status(404).json({ error: 'Post not found' });
     }
-    res.json(post);
+    res.json(post[0]);
   } catch (error) {
     console.error('Error fetching post:', error);
     res.status(500).json({ error: 'Internal Server Error' });

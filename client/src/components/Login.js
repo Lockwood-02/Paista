@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axiosInstance from "../modules/axiosInstance";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -82,6 +82,9 @@ const Login = () => {
             Login
           </button>
         </form>
+        <Link to='/signup'>
+          No account? Singup here!
+        </Link>
       </div>
     </div>
   );
